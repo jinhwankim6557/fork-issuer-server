@@ -2,22 +2,20 @@ spring:
   application:
     name: Issuer
   profiles:
-    active: dev
+    active: sample
     group:
         dev:
-          - tas
           - database
           - wallet
           - logging
           - spring-docs
-          - issue
+          - blockchain
         sample:
-          - tas
           - database-sample
           - wallet
           - logging
           - spring-docs
-          - issue
+          - blockchain
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -25,3 +23,16 @@ spring:
 
 server:
   port: 8091
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "health"
+          - "shutdown"
+  endpoint:
+    health:
+      show-details: "never"
+    shutdown:
+      enabled: true

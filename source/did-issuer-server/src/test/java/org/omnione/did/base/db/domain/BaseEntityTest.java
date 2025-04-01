@@ -3,6 +3,7 @@ package org.omnione.did.base.db.domain;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.omnione.did.base.config.JpaConfig;
+import org.omnione.did.base.config.QuerydslConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         "spring.datasource.password = ",
 })
 @DataJpaTest
-@Import(JpaConfig.class)
+@Import({JpaConfig.class, QuerydslConfig.class})
 class BaseEntityTest {
 
     @Autowired
