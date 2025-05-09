@@ -20,7 +20,7 @@
     "@mui/material": "^6",
     "@mui/x-charts": "^7.26.0",
     "@mui/x-data-grid": "^7.26.0",
-    "@toolpad/core": "^0.12.0",
+    "@toolpad/core": "^0.15.0",
     "@types/styled-components": "^5.1.34",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
