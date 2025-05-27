@@ -27,8 +27,14 @@ import org.omnione.did.wallet.key.WalletManagerFactory;
 import org.omnione.did.wallet.key.WalletManagerFactory.WalletManagerType;
 import org.omnione.did.wallet.key.WalletManagerInterface;
 import org.omnione.did.wallet.key.data.CryptoKeyPairInfo;
+import org.omnione.did.zkp.exception.ZkpException;
+import org.omnione.did.zkp.wallet.enums.ZkpWalletEncryptType;
+import org.omnione.did.zkp.wallet.key.ZkpWalletManagerFactory;
+import org.omnione.did.zkp.wallet.key.ZkpWalletManagerInterface;
 
 import java.nio.charset.StandardCharsets;
+
+import static org.omnione.did.zkp.exception.ZkpErrorCode.ERR_CODE_ZKP_WALLET_ALREADY_FILE;
 
 
 /**
@@ -52,8 +58,14 @@ public class BaseWalletUtil {
             WalletManagerInterface walletManager = WalletManagerFactory.getWalletManager(WalletManagerFactory.WalletManagerType.FILE);
             walletManager.create(walletFilePath, password.toCharArray(), WalletEncryptType.AES_256_CBC_PKCS5Padding);
         } catch (WalletException e) {
+            String errCode = e.getErrorCode();
+            if (errCode.equals("SSDKWLT02030")) {
+                log.error("Wallet already exists: {}", e.getMessage());
+                throw new OpenDidException(ErrorCode.WALLET_ALREADY_EXISTS);
+            }
+
             log.error("Failed to create wallet: {}", e.getMessage());
-            throw new OpenDidException(ErrorCode.WALLET_CREATION_FAILURE);
+            throw new OpenDidException(ErrorCode.WALLET_CONNECT_FAILURE);
         }
     }
 
@@ -111,6 +123,11 @@ public class BaseWalletUtil {
         try {
             walletManager.generateRandomKey(keyId, CryptoKeyPairInfo.KeyAlgorithmType.SECP256r1);
         } catch (WalletException e) {
+            if (e.getErrorCode().equals("SSDKWLT02005")) {
+                log.error("Key already exists: {}", e.getMessage());
+                throw new OpenDidException(ErrorCode.CRYPTO_KEY_PAIR_ALREADY_EXISTS);
+            }
+
             log.error("Failed to generate random keys: {} ", e.getMessage());
             throw new OpenDidException(ErrorCode.CRYPTO_KEY_PAIR_GENERATION_FAILED);
         }
@@ -144,6 +161,103 @@ public class BaseWalletUtil {
         } catch (WalletException e) {
             log.error("Failed to generate compact signature: {}", e.getMessage());
             throw new OpenDidException(ErrorCode.SIGNATURE_GENERATION_FAILED);
+        }
+    }
+    /**
+     * Creates a file-based wallet if not exists. Ignores if already exists.
+     */
+    public static void createFileWalletSafe(String walletFilePath, String password) {
+        try {
+            createFileWallet(walletFilePath, password);
+        } catch (OpenDidException e) {
+            if (e.getErrorCode() == ErrorCode.WALLET_ALREADY_EXISTS) {
+                log.info("Wallet already exists at {}.", walletFilePath);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+
+    /**
+     * Creates wallet if needed, connects it, and generates default key set safely.
+     */
+    public static WalletManagerInterface initializeWalletWithKeys(String walletFilePath, String password, String... keyIds) {
+        createFileWalletSafe(walletFilePath, password);
+        WalletManagerInterface walletManager = connectFileWallet(walletFilePath, password);
+        for (String keyId : keyIds) {
+            generateKeyPairSafe(walletManager, keyId);
+        }
+        return walletManager;
+    }
+
+    /**
+     * Generates a key pair if not already present.
+     */
+    public static void generateKeyPairSafe(WalletManagerInterface walletManager, String keyId) {
+        try {
+            generateKeyPair(walletManager, keyId);
+        } catch (OpenDidException e) {
+            if (e.getErrorCode() == ErrorCode.CRYPTO_KEY_PAIR_ALREADY_EXISTS) {
+                log.info("Key already exists: {}", keyId);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public static ZkpWalletManagerInterface getZkpFileWalletManager() {
+        try {
+            return ZkpWalletManagerFactory.getZkpWalletManager(ZkpWalletManagerFactory.ZkpWalletManagerType.FILE);
+        } catch (ZkpException e) {
+            log.error("Failed to get Wallet Manager: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.FAILED_TO_GET_FILE_WALLET_MANAGER);
+        }
+    }
+
+    public static ZkpWalletManagerInterface initializeZkpWallet(String zkpWalletPath, String password) {
+        createZkpFileWalletSafe(zkpWalletPath, password);
+        ZkpWalletManagerInterface zkpWalletManager = connectZkpFileWallet(zkpWalletPath, password);
+
+        return zkpWalletManager;
+    }
+
+    private static ZkpWalletManagerInterface connectZkpFileWallet(String zkpWalletPath, String password) {
+        try {
+            ZkpWalletManagerInterface zkpWalletManager = ZkpWalletManagerFactory.getZkpWalletManager(ZkpWalletManagerFactory.ZkpWalletManagerType.FILE);
+            zkpWalletManager.connect(zkpWalletPath, password.toCharArray());
+
+            return zkpWalletManager;
+        } catch (ZkpException e) {
+            log.error("Failed to connect zkp wallet: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.ZKP_WALLET_CONNECT_FAILURE);
+        }
+    }
+
+    public static void createZkpFileWallet(String zkpWalletPath, String password) {
+        try {
+            ZkpWalletManagerInterface zkpWalletManager = ZkpWalletManagerFactory.getZkpWalletManager(ZkpWalletManagerFactory.ZkpWalletManagerType.FILE);
+            zkpWalletManager.create(zkpWalletPath, password.toCharArray(), ZkpWalletEncryptType.AES_256_CBC_PKCS5Padding);
+        } catch (ZkpException e) {
+            if (ERR_CODE_ZKP_WALLET_ALREADY_FILE.getCode().equals(e.getErrorCode())) {
+                log.error("ZKP Wallet already exists: {}", e.getMessage());
+                throw new OpenDidException(ErrorCode.ZKP_WALLET_ALREADY_EXISTS);
+            }
+
+            log.error("Failed to create zkp wallet: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.ZKP_WALLET_CONNECT_FAILURE);
+        }
+    }
+
+    public static void createZkpFileWalletSafe(String zkpWalletPath, String password) {
+        try {
+            createZkpFileWallet(zkpWalletPath, password);
+        } catch (OpenDidException e) {
+            if (e.getErrorCode() == ErrorCode.ZKP_WALLET_ALREADY_EXISTS) {
+                log.info("Wallet already exists at {}.", zkpWalletPath);
+            } else {
+                throw e;
+            }
         }
     }
 }

@@ -7,10 +7,10 @@ plugins {
 }
 
 group = 'org.omnione.did'
-version = '1.0.0'
+version = '2.0.0'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '21'
 }
 
 jar {
@@ -41,6 +41,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.web3j:core:4.14.0'
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -97,11 +98,10 @@ tasks.named('test') {
     }
 }
 
-
-import com.github.gradle.node.npm.task.NpmTask
 import com.github.jk1.license.render.*
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.filter.ExcludeTransitiveDependenciesFilter
+import com.github.gradle.node.npm.task.NpmTask
 
 licenseReport {
     outputDir = "$projectDir/build/licenses"
@@ -116,6 +116,7 @@ node {
     workDir = file("${projectDir}/.gradle/nodejs")
     npmWorkDir = file("${projectDir}/.gradle/npm")
 }
+
 
 tasks.register('deleteFrontResources', Delete) {
     delete "${backendResourceDir}/**"

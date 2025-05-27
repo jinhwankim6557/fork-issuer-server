@@ -10,6 +10,7 @@ import CustomConfirmDialog from "../../../components/dialog/CustomConfirmDialog"
 import CustomDialog from "../../../components/dialog/CustomDialog";
 import { fetchNamespaces } from "../../../apis/vc-management-api"; // API 변경됨
 import CustomItemSelectionDialog from "./SchemaItemSelectDialog";
+import { formatErrorMessage } from "../../../utils/error-handler";
 
 type Props = {}
 
@@ -68,7 +69,7 @@ const VcSchemaRegistrationPage = (props: Props) => {
         })
         .catch((error) => {
           console.error("Failed to retrieve namespaces. ", error);
-          navigate('/error', { state: { message: `Failed to retrieve Namespaces: ${error}` } });
+          navigate('/error', { state: { message: formatErrorMessage(error, "Failed to retrieve Namespaces")} });
         })
 
     } catch (error) {
@@ -178,9 +179,10 @@ const VcSchemaRegistrationPage = (props: Props) => {
     return undefined;
   };
 
+
   const validateDescription = (description?: string): string | undefined => {
     if (!description) return;
-    if (description.length > 2000) return 'Description must be 2000 characters or less.';
+    if (description.length < 4 || description.length > 2000) return 'Description must be 2000 characters or less.';
     return undefined;
 };
 
@@ -333,7 +335,7 @@ const VcSchemaRegistrationPage = (props: Props) => {
           />
 
           <TextField
-            label="Description"
+            label="Description *"
             variant="outlined"
             margin="normal"
             size="small"

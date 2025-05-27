@@ -24,6 +24,15 @@ export const getNavigationByStatus = (serverStatus: string | null): Navigation=>
       ],
     },
     {
+      segment: 'zkp-management',
+      title: 'ZKP Management',
+      children: [
+        { segment: 'zkp-namespace-management', title: 'ZKP Namespace Management',},
+        { segment: 'credential-schema-management', title: 'Credential Schema Management', },
+        { segment: 'credential-definition-management', title: 'Credential Definition Management',},
+      ],
+    },
+    {
       segment: 'users/user-management',
       title: 'User Management',
     },
@@ -31,10 +40,10 @@ export const getNavigationByStatus = (serverStatus: string | null): Navigation=>
       segment: 'issued-vcs/issued-vc-management',
       title: 'Issued VC Management',
     },
-    // {
-    //   segment: 'admin-management',
-    //   title: 'Admin Management', 
-    // },
+    {
+      segment: 'admin-management',
+      title: 'Admin Management', 
+    },
     // {
     //   segment: 'server-management',
     //   title: 'Server Management', 

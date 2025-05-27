@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 OmniOne.
+ * Copyright 2024 - 2025 OmniOne.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class DemoUserService {
         String pii = request.getPii();
         String userData = JsonUtil.serializeToJson(request);
 
-        User user = userQueryService.findByPii(pii).orElseGet(User::new);
+        User user = userQueryService.findByPiiAndVcSchemaId(pii, 1L).orElseGet(User::new);
         user.setPii(pii);
         user.setData(userData);
         user.setVcSchemaId(1L); // This is a demo-only configuration.
@@ -74,7 +74,7 @@ public class DemoUserService {
         String did = request.getDid();
         String userData = JsonUtil.serializeToJson(request);
 
-        User user = userQueryService.findByDid(did).orElseGet(User::new);
+        User user = userQueryService.findByDidAndVcSchemaId(did, 2L).orElseGet(User::new);
         user.setDid(did);
         user.setData(userData);
         user.setVcSchemaId(2L); // This is a demo-only configuration.

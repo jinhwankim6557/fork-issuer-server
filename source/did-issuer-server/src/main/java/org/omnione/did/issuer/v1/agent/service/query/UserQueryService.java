@@ -52,10 +52,12 @@ public class UserQueryService {
      * @return the
      * @throws OpenDidException if the user cannot be retrieved
      */
+    public Optional<User> findByPiiAndVcSchemaId(String pii, Long vcSchemaId) {
+        return userRepository.findByPiiAndVcSchemaId(pii, vcSchemaId);
+    }
     public Optional<User> findByPii(String pii) {
         return userRepository.findByPii(pii);
     }
-
     /**
      * Retrieve the user with the given DID from the database.
      *
@@ -67,18 +69,23 @@ public class UserQueryService {
     }
 
     /**
-     * Retrieve the user with the given holder from the database.
+     * Retrieve the user with the given DID from the database.
      *
-     * @param holder the holder of the user to retrieve
-     * @return the user with the given holder
+     * @param did the DID of the user to retrieve
+     * @return the user with the given DID
      */
-    public Optional<User> findByHolder(Holder holder) {
-        return findByPii(holder.getPii())
-                .or(() -> findByDid(holder.getDid()));
+    public Optional<User> findByDidAndVcSchemaId(String did, Long vcSchemaId) {
+        return userRepository.findByDidAndVcSchemaId(did, vcSchemaId);
     }
+
 
     public User findById(Long id) {
         return userRepository.findById(id)
+                .orElseThrow(() -> new OpenDidException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public User findByIdAndVcSchemaId(Long id, Long vcSchemaId) {
+        return userRepository.findByIdAndVcSchemaId(id, vcSchemaId)
                 .orElseThrow(() -> new OpenDidException(ErrorCode.USER_NOT_FOUND));
     }
 }

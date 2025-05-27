@@ -44,16 +44,30 @@ public class UrlConstant {
         public static final String ISSUE_PROFILE = "/issue-profiles";
         public static final String LIST = "/list";
         public static final String ISSUER = "/issuer";
-        public static final String ADMIN = "/admin";
+        public static final String ADMIN = "/admins";
 
         public static final String USER = "/users";
 
         public static final String ISSUED_VCS = "/issued-vcs";
 
+        public static final String ZKP_NAMESPACE  = "/zkp/namespaces";
+        public static final String CHECK_NAMESPACE_ID = "/check-namespace-id";
+        public static final String ZKP_SCHEMA  = "/zkp/schemas";
+        public static final String FIND_ALL = "/all";
+        public static final String ZKP_ATTRIBUTES  = "/attributes";
+
+        public static final String ZKP_CREDENTIAL_DEFINITION  = "/zkp/definitions";
+        public static final String CHECK_CREDENTIAL_DEFINITION_ALIAS = "/check-credential-definition-alias";
+        public static final String RE_REGISTER = "/re-register";
+
     }
 
     public static class Tas {
-        public static final String V1 = "/api/v1";
+        public static final String ADMIN_V1 = "/tas/admin/v1";
+
+        public static final String V1 = "/tas/api/v1";
+        public static final String REGISTER_DID_PUBLIC = "/entities/register-did/public";
+        public static final String REQUEST_ENTITY_STATUS = "/entities/request-status";
         public static final String PROPOSE_ENROLL_ENTITY = "/propose-enroll-entity";
         public static final String REQUEST_ECDH = "/request-ecdh";
         public static final String REQUEST_ENROLL_ENTITY = "/request-enroll-entity";
@@ -65,6 +79,8 @@ public class UrlConstant {
         public static final String V1 = "/list/admin/v1";
         public static final String VC_SCHEMA_PUBLIC = "/vc-schemas/public";
         public static final String VC_PLAN_PUBLIC = "/vc-plans/public";
+        public static final String CREDENTIAL_SCHEMA_PUBLIC = "/credential-schemas/public";
+        public static final String CREDENTIAL_DEFINITION_PUBLIC = "/credential-definitions/public";
     }
 
 }
