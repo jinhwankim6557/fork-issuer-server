@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 OmniOne.
+ * Copyright 2024 - 2025 OmniOne.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class VcQueryService {
      * @throws OpenDidException if the VC cannot be retrieved
      */
     public Vc findByVcId(String vcId) {
-        return vcRepository.findByVcId(vcRepository)
+        return vcRepository.findByVcId(vcId)
                 .orElseThrow(() -> new OpenDidException(ErrorCode.VC_NOT_FOUND));
     }
 

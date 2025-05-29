@@ -7,10 +7,10 @@ plugins {
 }
 
 group = 'org.omnione.did'
-version = '1.0.0'
+version = '2.0.0'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '21'
 }
 
 jar {
@@ -41,6 +41,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.web3j:core:4.14.0'
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -57,8 +58,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     // Query DSL
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.11'
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:6.11:jpa'
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
@@ -100,6 +101,7 @@ tasks.named('test') {
 import com.github.jk1.license.render.*
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.filter.ExcludeTransitiveDependenciesFilter
+import com.github.gradle.node.npm.task.NpmTask
 
 licenseReport {
     outputDir = "$projectDir/build/licenses"
@@ -109,11 +111,12 @@ licenseReport {
 
 node {
     version = "22.9.0"
-    download = false
+    download = true
     nodeProjectDir = file("${frontendResourceDir}")
     workDir = file("${projectDir}/.gradle/nodejs")
     npmWorkDir = file("${projectDir}/.gradle/npm")
 }
+
 
 tasks.register('deleteFrontResources', Delete) {
     delete "${backendResourceDir}/**"
@@ -122,16 +125,17 @@ tasks.register('deleteFrontResources', Delete) {
     delete "${frontendResourceDir}/dist"
 }
 
-tasks.register('npm_install', Exec) {
+tasks.register('npm_install', NpmTask) {
+    dependsOn tasks.named("nodeSetup")
     workingDir = file("${frontendResourceDir}")
-    commandLine = ["npm", "install"]
+    args = ['install']
 }
 
-tasks.register('npm_build', Exec) {
+tasks.register('npm_build', NpmTask) {
     dependsOn 'deleteFrontResources'
     dependsOn 'npm_install'
     workingDir = file("${frontendResourceDir}")
-    commandLine = ["npm", "run", "build"]
+    args = ['run', 'build']
 }
 
 tasks.register('copyFrontResources', Copy) {
@@ -149,4 +153,5 @@ tasks.named('processResources') {
     if (!Boolean.valueOf(skipFrontendBuild)) {
         dependsOn('npm_build', 'copyFrontResources')
     }
+
 }

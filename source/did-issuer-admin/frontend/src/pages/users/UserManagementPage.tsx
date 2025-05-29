@@ -1,4 +1,4 @@
-import { Box, Link, styled, Typography } from '@mui/material';
+import { Box, Button, Icon, Link, styled, Typography } from '@mui/material';
 import { GridPaginationModel } from '@mui/x-data-grid';
 import { useDialogs } from '@toolpad/core/useDialogs';
 import { useEffect, useMemo, useState } from 'react';
@@ -7,6 +7,7 @@ import { fetchNamespaces } from '../../apis/vc-management-api';
 import CustomDataGrid from '../../components/data-grid/CustomDataGrid';
 import FullscreenLoader from '../../components/loading/FullscreenLoader';
 import { fetchUserInfos } from '../../apis/admin-api';
+import { formatErrorMessage } from '../../utils/error-handler';
 
 type Props = {}
 
@@ -31,10 +32,11 @@ const UserManagementPage = (props: Props) => {
     pageSize: 10,
   });
 
-  const selectedRowData = useMemo(() => {
-    return rows.find(row => row.id === selectedRow) || null;
-  }, [rows, selectedRow]);
-  
+  const selectedRowData = useMemo(
+    () => Array.isArray(rows) ? rows.find(row => row.id === selectedRow) || null : null,
+    [rows, selectedRow]
+  );
+
   useEffect(() => {
     setLoading(true);
     fetchUserInfos(paginationModel.page, paginationModel.pageSize, null, null)
@@ -44,7 +46,7 @@ const UserManagementPage = (props: Props) => {
       })
       .catch((error) => {
         console.error("Failed to retrieve User Infos. ", error);
-        navigate('/error', { state: { message: `Failed to retrieve User Infos: ${error}` } });
+        navigate('/error', { state: { message: formatErrorMessage(error, "Failed to retrieve User Infos.") } });
       })
       .finally(() => setLoading(false));
   }, [paginationModel]);
@@ -60,9 +62,9 @@ const UserManagementPage = (props: Props) => {
   })), []);
 
   const StyledSubTitle = useMemo(() => styled(Typography)({
-      textAlign: 'left',
-      fontSize: '24px',
-      fontWeight: 700,
+    textAlign: 'left',
+    fontSize: '24px',
+    fontWeight: 700,
   }), []);
 
   return (
@@ -70,29 +72,40 @@ const UserManagementPage = (props: Props) => {
       <FullscreenLoader open={loading} />
 
       <StyledContainer>
-      <StyledSubTitle>User Management</StyledSubTitle>
-      <CustomDataGrid 
-          rows={rows} 
+        <StyledSubTitle>User Management</StyledSubTitle>
+        <CustomDataGrid
+          rows={rows}
           columns={[
-            { 
-              field: 'did', 
-              headerName: "DID", 
+            {
+              field: 'did',
+              headerName: "DID",
               width: 200,
-              renderCell: (params) => (
-                <Link 
-                  component="button"
-                  variant='body2'
-                  onClick={() => navigate(`/users/user-management/${params.row.id}`)}
-                  sx={{ cursor: 'pointer', color: 'primary.main' }}
-                >
-                  {params.value}
-                </Link>),
             },
-            { field: 'vcSchemaName', headerName: "VC Schema", width: 200},
-            { field: 'createdAt', headerName: "Registered At", width: 200},
-            { field: 'updatedAt', headerName: "Updated At", width: 200},
-          ]} 
-          selectedRow={selectedRow} 
+            { field: 'vcSchemaName', headerName: "VC Schema", width: 200 },
+            { field: 'createdAt', headerName: "Registered At", width: 200 },
+            { field: 'updatedAt', headerName: "Updated At", width: 200 },
+            {
+              field: "",
+              headerName: "확인",
+              width: 150,
+              renderCell: (params) => (
+                <Box sx={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  height: '100%',
+                  width: '100%',
+                }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => navigate(`/users/user-management/${params.row.id}`)}
+                  >
+                    상세보기
+                  </Button>
+                </Box>
+              )
+            }
+          ]}
+          selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
           onEdit={() => {
             if (selectedRowData) {
@@ -101,14 +114,14 @@ const UserManagementPage = (props: Props) => {
           }}
           onRegister={() => navigate('/users/user-management/user-registration')}
           additionalButtons={[
-           
+
           ]}
-          paginationMode="server" 
-          totalRows={totalRows} 
-          paginationModel={paginationModel} 
-          setPaginationModel={setPaginationModel} 
+          paginationMode="server"
+          totalRows={totalRows}
+          paginationModel={paginationModel}
+          setPaginationModel={setPaginationModel}
         />
-        </StyledContainer>
+      </StyledContainer>
     </>
   )
 }

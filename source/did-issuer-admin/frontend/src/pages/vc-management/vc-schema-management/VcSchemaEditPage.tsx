@@ -9,6 +9,7 @@ import { useDialogs } from "@toolpad/core";
 import CustomConfirmDialog from "../../../components/dialog/CustomConfirmDialog";
 import CustomDialog from "../../../components/dialog/CustomDialog";
 import SchemaItemSelectDialog from "./SchemaItemSelectDialog";
+import { formatErrorMessage } from "../../../utils/error-handler";
 
 type Props = {};
 
@@ -116,7 +117,7 @@ const VcSchemaEditPage = (props: Props) => {
 
     const validateDescription = (description?: string): string | undefined => {
         if (!description) return;
-        if (description.length > 2000) return 'Description must be 2000 characters or less.';
+        if (description.length < 4 || description.length > 2000) return 'Description must be 2000 characters or less.';
         return undefined;
     };
 
@@ -189,7 +190,7 @@ const VcSchemaEditPage = (props: Props) => {
                 })
                 .catch((error) => {
                     console.error("Failed to retrieve namespaces. ", error);
-                    navigate('/error', { state: { message: `Failed to retrieve Namespaces: ${error}` } });
+                    navigate('/error', { state: { message: formatErrorMessage(error, "Failed to retrieve Namespaces") } });
                 })
 
         } catch (error) {
@@ -299,8 +300,7 @@ const VcSchemaEditPage = (props: Props) => {
 
     useEffect(() => {
         if (!initialData) return;
-        console.log(formData);
-        console.log(initialData);
+
         const isModified = JSON.stringify(formData) !== JSON.stringify(initialData);
         setIsButtonDisabled(!isModified);
     }, [formData, initialData]);
@@ -385,7 +385,7 @@ const VcSchemaEditPage = (props: Props) => {
                     />
 
                     <TextField
-                        label="Description"
+                        label="Description *"
                         variant="outlined"
                         margin="normal"
                         size="small"

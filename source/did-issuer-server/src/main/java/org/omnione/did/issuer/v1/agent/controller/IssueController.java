@@ -18,11 +18,13 @@ package org.omnione.did.issuer.v1.agent.controller;
 
 import jakarta.validation.Valid;
 import org.omnione.did.base.constants.UrlConstant;
+import org.omnione.did.base.datamodel.data.zkp.ZkpLadgerRequestData;
 import org.omnione.did.issuer.v1.agent.dto.vc.*;
 import org.omnione.did.issuer.v1.agent.service.IssueService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.omnione.did.zkp.exception.ZkpException;
 import org.springframework.web.bind.annotation.*;
 
 /**

@@ -5,6 +5,7 @@ import { getIssueProfile } from "../../../apis/vc-management-api";
 import CustomDialog from "../../../components/dialog/CustomDialog";
 import FullscreenLoader from "../../../components/loading/FullscreenLoader";
 import { Box, Button, Paper, styled, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, useTheme } from "@mui/material";
+import { formatErrorMessage } from "../../../utils/error-handler";
 
 type Props = {}
 
@@ -34,7 +35,6 @@ const IssueProfileDetailPage = (props: Props) => {
   };
 
   const handleOpenVcSchemaDetail = () => {
-    console.log(numericVcSchemaId)
     window.open(`/vc-management/vc-schema-management-popup/${numericVcSchemaId}?isPopup=true`, "vc schema detail", "popup=yes, width=850, height=800");
   };
 
@@ -67,11 +67,13 @@ const IssueProfileDetailPage = (props: Props) => {
           language: data.issueProfile.language,
           initiateType: data.issueProfile.initiateType,
           tags: data.issueProfile.tags,
+          credentialDefinitionId: data.issueProfile.definitionId,
+          zkpEnabled: data.issueProfile.zkpEnabled
         });
         setNumericVcSchemaId(data.issueProfile.vcSchemaId);
       } catch (err) {
         console.error('Failed to fetch Issue Profile:', err);
-        navigate('/error', { state: { message: `Failed to fetch Issue Profile: ${err}` } });
+        navigate('/error', { state: { message: formatErrorMessage(err, "Failed to fetch Issue Profile.") } });
       } finally {
         setIsLoading(false);
       }
@@ -150,7 +152,7 @@ const IssueProfileDetailPage = (props: Props) => {
           <TextField label="Cipher" value={issueProfileData?.cipher || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
           <TextField label="Curve" value={issueProfileData?.curve || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
           <TextField label="Padding" value={issueProfileData?.padding || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
-
+          
           <Typography variant="h6" sx={{ mt: 3 }}>Tags</Typography>
           <TableContainer component={Paper} sx={{ maxHeight: 400, overflow: "auto", mt: 2 }}>
             <Table>
@@ -170,6 +172,12 @@ const IssueProfileDetailPage = (props: Props) => {
             </Table>
           </TableContainer>
 
+          {issueProfileData?.zkpEnabled && (
+          <>
+            <Typography variant="h6" sx={{ mt: 3 }}>ZKP</Typography>
+            <TextField label="Definition ID" value={issueProfileData?.credentialDefinitionId || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
+          </>
+          )}
           <Typography variant="h6" sx={{ mt: 3 }}></Typography>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>

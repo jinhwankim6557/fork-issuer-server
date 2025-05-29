@@ -29,6 +29,18 @@ import UserDetailPage from './pages/users/UserDetailPage';
 import UserEditPage from './pages/users/UserEditPage';
 import IssuedVcDetailPage from './pages/issued-vcs/IssuedVcDetailPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
+import AdminRegisterPage from './pages/admins/AdminRegisterPage';
+import AdminDetailPage from './pages/admins/AdminDetailPage';
+import ZkpNamespaceManagementPage from './pages/zkp-management/namespace-management/ZkpNamespaceManagementPage';
+import CredentialSchemaManagementPage from './pages/zkp-management/credential-schema-management/CredentialSchemaManagementPage';
+import CredentialDefinitionManagementPage from './pages/zkp-management/credential-definition-management/CredentialDefinitionManagementPage';
+import ZkpNamespaceRegistrationPage from './pages/zkp-management/namespace-management/ZkpNamespaceRegistrationPage';
+import ZkpNamespaceDetailPage from './pages/zkp-management/namespace-management/ZkpNamespaceDetailPage';
+import ZkpNamespaceEditPage from './pages/zkp-management/namespace-management/ZkpNamespaceEditPage';
+import ZkpCredentialSchemaRegistrationPage from './pages/zkp-management/credential-schema-management/CredentialSchemaRegistrationPage';
+import CredentialSchemaDetailPage from './pages/zkp-management/credential-schema-management/CredentialSchemaDetailPage';
+import CredentialDefinitionRegistrationPage from './pages/zkp-management/credential-definition-management/CredentialDefinitionRegistrationPage';
+import CredentialDefinitionDetailPage from './pages/zkp-management/credential-definition-management/CredentialDefinitionDetailPage';
 
 const router = createBrowserRouter([
   {
@@ -135,12 +147,75 @@ const router = createBrowserRouter([
             Component: IssuedVcManagementPage,
           },
           {
+            path: '/admin-management/admin-registration',
+            Component: AdminRegisterPage,
+          },
+          {
+            path: '/admin-management/:id',
+            Component: AdminDetailPage,
+          },
+
+          // admin management
+          {
             path: '/admin-management',
             Component: AdminManagementPage,
           },
+
+          // server management
           {
             path: '/server-management',
             Component: ServerManagementPage,
+          },
+
+          // zkp namespace management
+          {
+            path: '/zkp-management/zkp-namespace-management/namespace-registration',
+            Component: ZkpNamespaceRegistrationPage,
+          },
+          {
+            path: '/zkp-management/zkp-namespace-management/zkp-namespace-edit/:id',
+            Component: ZkpNamespaceEditPage,
+          },
+          {
+            path: '/zkp-management/zkp-namespace-management/:id',
+            Component: ZkpNamespaceDetailPage,
+          },
+          
+          {
+            path: '/zkp-management/zkp-namespace-management',
+            Component: ZkpNamespaceManagementPage,
+          },
+
+          // zkp credential schema management
+          {
+            path: '/zkp-management/credential-schema-management/credential-schema-registration',
+            Component: ZkpCredentialSchemaRegistrationPage,
+          },
+          {
+            path: '/zkp-management/credential-schema-management/:id',
+            Component: CredentialSchemaDetailPage,
+          },
+          {
+            path: '/zkp-management/credential-schema-management',
+            Component: CredentialSchemaManagementPage,
+          },
+
+          // zkp credential definition management
+          {
+            path: '/zkp-management/credential-definition-management/credential-definition-registration',
+            Component: CredentialDefinitionRegistrationPage,
+          },
+          {
+            path: '/zkp-management/credential-definition-management/:id',
+            Component: CredentialDefinitionDetailPage,
+          },
+          {
+            path: '/zkp-management/credential-definition-management',
+            Component: CredentialDefinitionManagementPage,
+          },
+          {
+            path: '/zkp-management',
+            Component: ZkpNamespaceManagementPage,
           },
         ],
       },
