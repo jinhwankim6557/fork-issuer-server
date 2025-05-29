@@ -61,7 +61,7 @@ public class SignatureService {
             String serializedJson = JsonUtil.serializeAndSort(dataSet);
 
             // Retrieve CAS.
-            IssuerInfo existedIssuer = issuerInfoQueryService.findIssuerInfo();
+            IssuerInfo existedIssuer = issuerInfoQueryService.getIssuerInfo();
 
             // Retrieve CAS DID Document.
             DidDocument casDidDocument = didDocService.getDidDocument(existedIssuer.getDid());
