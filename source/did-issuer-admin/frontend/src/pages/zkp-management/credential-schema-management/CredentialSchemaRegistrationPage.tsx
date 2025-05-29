@@ -187,6 +187,12 @@ const handleOpenAttributeDialog = async () => {
     });
   };
 
+  const StyledTitle = useMemo(() => styled(Typography)({
+    textAlign: 'left',
+    fontSize: '24px',
+    fontWeight: 700,
+  }), []);
+
   const StyledContainer = useMemo(() => styled(Box)(({ theme }) => ({
     width: 900,
     margin: 'auto',
@@ -201,8 +207,9 @@ const handleOpenAttributeDialog = async () => {
   return (
     <>
       <FullscreenLoader open={isLoading} />
-      <Typography variant="h4">Credential Schema Registration</Typography>
+      <Typography variant="h4">Credential Schema Management</Typography>
       <StyledContainer>
+        <StyledTitle>Credential Schema Registration</StyledTitle>
         <TextField
           label="Name *"
           fullWidth
