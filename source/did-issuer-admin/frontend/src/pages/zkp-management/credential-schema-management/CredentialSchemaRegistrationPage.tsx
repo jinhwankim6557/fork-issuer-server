@@ -201,7 +201,7 @@ const handleOpenAttributeDialog = async () => {
   return (
     <>
       <FullscreenLoader open={isLoading} />
-      <Typography variant="h4">ZKP Credential Schema Registration</Typography>
+      <Typography variant="h4">Credential Schema Registration</Typography>
       <StyledContainer>
         <TextField
           label="Name *"

@@ -122,7 +122,7 @@ const CredentialDefinitionDetailPage = () => {
         <Typography variant="h4">Credential Definition Management</Typography>
 
         <StyledContainer>
-            <StyledTitle>Credential Definition Detail</StyledTitle>
+            <StyledTitle>Credential Definition Detail Information</StyledTitle>
 
             <StyledInputArea>
                 <TextField
