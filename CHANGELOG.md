@@ -7,6 +7,7 @@
     - ZKP Management
     - Adjusted some menu positions
 - Added functionality for Issuing ZKP Credential
+- Support for Besu blockchain
 
 ### 🚀 New Features
 - Admin Console
