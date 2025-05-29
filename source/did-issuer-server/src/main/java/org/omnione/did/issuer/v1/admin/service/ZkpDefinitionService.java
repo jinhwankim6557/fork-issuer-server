@@ -75,6 +75,10 @@ public class ZkpDefinitionService {
         // Find Schema
         log.debug("Finding Schema");
         ZkpSchema zkpSchema = zkpSchemaQueryService.findBySchemaId(request.getSchemaId());
+        if (zkpCredentialDefinitionQueryService.existBySchemaId(request.getSchemaId())) {
+            log.error("Credential schema is already in use: {}", request.getSchemaId());
+            throw new OpenDidException(ErrorCode.CREDENTIAL_DEFINITION_SCHEMA_ALREADY_IN_USE);
+        }
         log.debug("Parsing Credential Schema");
         CredentialSchema credentialSchema = GsonWrapper.getGson()
                 .fromJson(zkpSchema.getSchema(), CredentialSchema.class);

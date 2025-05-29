@@ -21,7 +21,6 @@ import lombok.Getter;
 /**
  * Enumeration of error codes used in the DID Verifier system.
  * Each error code contains a unique identifier, a descriptive message, and an associated HTTP status code.
- *
  */
 @Getter
 public enum ErrorCode {
@@ -34,12 +33,12 @@ public enum ErrorCode {
     REF_ID_INVALID("00004", "The refId is not valid.", 400),
 
     TR_VC_OFFER_FAILED("00005", "Failed to process the 'request-offer' API request.", 500),
-    TR_VC_ISSUE_PROPOSE_FAILED("00006", "Failed to process the 'inspect-propose-issue' API request.",500),
+    TR_VC_ISSUE_PROPOSE_FAILED("00006", "Failed to process the 'inspect-propose-issue' API request.", 500),
     TR_VC_ISSUE_PROFILE_FAILED("00007", "Failed to process the 'generate-issue-profile' API request.", 500),
     TR_VC_ISSUE_FAILED("00008", "Failed to process the 'issue-vc' API request.", 500),
     TR_VC_ISSUE_COMPLETE_FAILED("00009", "Failed to process the 'complete-vc' API request.", 500),
 
-    TR_VC_REVOKE_PROPOSE_FAILED("00010","Failed to process the 'inspect-propose-revoke' API request.", 500),
+    TR_VC_REVOKE_PROPOSE_FAILED("00010", "Failed to process the 'inspect-propose-revoke' API request.", 500),
     TR_VC_REVOKE_FAILED("00011", "Failed to process the 'revoke-vc' API request.", 500),
     TR_VC_REVOKE_COMPLETE_FAILED("00012", "Failed to process the 'complete-revoke-vc' API request.", 500),
 
@@ -72,7 +71,6 @@ public enum ErrorCode {
     VC_GENERATION_FAILED("00212", "Failed to generate VC", 500),
     VC_SCHEMA_PARSE_FAILED("00213", "Failed to parse VC Schema", 500),
     VC_SCHEMA_NOT_FOUND("00214", "VC Schema not found for given ID.", 400),
-
 
 
     // 300~ 399 = Holder
@@ -156,12 +154,12 @@ public enum ErrorCode {
     ISSUER_DID_DOCUMENT_ALREADY_REQUESTED("00807", "Failed to register Issuer DID Document: document is already requested.", 400),
     ISSUER_DID_DOCUMENT_ALREADY_REGISTERED("00808", "Failed to register Issuer DID Document: document is already registered.", 400),
     FAILED_TO_GENERATE_DID_DOCUMENT("00809", "Failed to generate DID document.", 500),
-    FAILED_TO_REGISTER_ISSUER_DID_DOCUMENT("00810","Failed to register Issuer DID Document.", 500),
-    ISSUER_DID_DOCUMENT_NOT_FOUND("00811","Failed to find Issuer DID Document: o registration request has been made.", 400),
+    FAILED_TO_REGISTER_ISSUER_DID_DOCUMENT("00810", "Failed to register Issuer DID Document.", 500),
+    ISSUER_DID_DOCUMENT_NOT_FOUND("00811", "Failed to find Issuer DID Document: o registration request has been made.", 400),
     INVALID_CERTIFICATE_VC_JSON_FORMAT("00812", "Failed to process certificate VC: invalid JSON format.", 500),
-    FAILED_TO_REQUEST_CERTIFICATE_VC("00813","Failed to process the 'request-certificate-vc' API request.", 500),
+    FAILED_TO_REQUEST_CERTIFICATE_VC("00813", "Failed to process the 'request-certificate-vc' API request.", 500),
     FAILED_TO_LOAD_KEY_ELEMENT("00814", "Failed to load key element.", 500),
-    TAS_COMMUNICATION_ERROR("00815","Failed to communicate with tas: unknown error occurred.", 500),
+    TAS_COMMUNICATION_ERROR("00815", "Failed to communicate with tas: unknown error occurred.", 500),
     URL_PING_ERROR("00816", "Failed to ping the URL.", 400),
     ADMIN_ALREADY_EXISTS("00817", "Failed to register admin: admin is already registered.", 400),
     ZKP_NAMESPACE_SAVE_FAILED("00818", "Failed to save ZKP Namespace.", 500),
@@ -178,6 +176,7 @@ public enum ErrorCode {
     CREDENTIAL_DEFINITION_GENERATION_FAILED("00829", "Failed to generate ZKP Credential Definition.", 500),
     CREDENTIAL_DEFINITION_REGISTRATION_FAILED("00830", "Failed to register ZKP Credential Definition. (Blockchain or List Provider)", 500),
     ZKP_CREDENTIAL_DEFINITION_NOT_FOUND("00831", "ZKP Credential Definition not found for the given ID.", 400),
+    CREDENTIAL_DEFINITION_SCHEMA_ALREADY_IN_USE("00832", "ZKP Credential schema is already in use.", 400),
 
     TAS_UNKNOWN_RESPONSE("000900", "Failed to process response: received unknown data from the Tas.", 500),
 

@@ -95,4 +95,8 @@ public class ZkpCredentialDefinitionQueryService {
     public List<ZkpCredentialDefinition> findByStatus(ZkpCredentialDefinitionStatus status) {
         return zkpCredentialDefinitionRepository.findAllByStatusNot(status);
     }
+
+    public Boolean existBySchemaId(String schemaId) {
+        return zkpCredentialDefinitionRepository.existsBySchemaId(schemaId);
+    }
 }
