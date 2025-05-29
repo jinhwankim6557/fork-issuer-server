@@ -528,7 +528,7 @@ logging:
     - 예시: `/path/to/your/blockchain.properties`
 
 ## 5.6. blockchain.properties
-- 역할: Verifier 서버에서 연동할 블록체인 서버 정보를 설정합니다. [Open DID Installation Guide]의 '5.3. Step 3: Blockchain 설치'에 따라 Hyperledger Besu 네트워크를 설치하면, 개인 키, 인증서, 서버 접속 정보 설정 파일이 자동으로 생성됩니다. blockchain.properties에서는 이들 파일이 위치한 경로와, Hyperledger Besu 설치 시 입력한 네트워크 이름을 설정합니다.
+- 역할: Issuer 서버에서 연동할 블록체인 서버 정보를 설정합니다. [Open DID Installation Guide]의 '5.3. Step 3: Blockchain 설치'에 따라 Hyperledger Besu 네트워크를 설치하면, 개인 키, 인증서, 서버 접속 정보 설정 파일이 자동으로 생성됩니다. blockchain.properties에서는 이들 파일이 위치한 경로와, Hyperledger Besu 설치 시 입력한 네트워크 이름을 설정합니다.
 
 - 위치: `src/main/resources/properties`
 
