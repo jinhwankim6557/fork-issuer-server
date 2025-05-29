@@ -47,7 +47,7 @@ public class ListCommunityService {
     private final VcSchemaService vcSchemaService;
     @Value(value = "${tas.url}")
     private String TAS_URL;
-    private final String ISSUER_DID;
+    private final IssuerInfoQueryService issuerInfoQueryService;
 
     public ListCommunityService(ApplicationConfigQueryService applicationConfigQueryService,
                                 ZkpCredentialDefinitionQueryService zkpCredentialDefinitionQueryService,
@@ -55,7 +55,7 @@ public class ListCommunityService {
         this.vcSchemaService = vcSchemaService;
         this.zkpCredentialDefinitionQueryService = zkpCredentialDefinitionQueryService;
 //        this.TAS_URL = applicationConfigQueryService.getApplicationConfig().getTasUrl() + UrlConstant.List.V1;
-        this.ISSUER_DID = issuerInfoQueryService.getIssuerInfo().getDid();
+        this.issuerInfoQueryService = issuerInfoQueryService;
     }
 
     /**
@@ -69,7 +69,7 @@ public class ListCommunityService {
         String vcSchemaEncode = BaseMultibaseUtil.encode(vcSchema.toJson().getBytes(StandardCharsets.UTF_8));
         RegisterVcSchemaReqDto request = RegisterVcSchemaReqDto.builder()
                 .vcSchema(vcSchemaEncode)
-                .issuerDid(ISSUER_DID)
+                .issuerDid(issuerInfoQueryService.getIssuerInfo().getDid())
                 .build();
         try {
             HttpClientUtil.postData(TAS_URL + UrlConstant.List.V1 + UrlConstant.List.VC_SCHEMA_PUBLIC,
@@ -123,8 +123,8 @@ public class ListCommunityService {
                         .allowUserInit(!isIssuerInit)
                         .delegatedIssuance(false)
                         .build())
-                .allowedIssuers(List.of(ISSUER_DID))
-                .manager(ISSUER_DID)
+                .allowedIssuers(List.of(issuerInfoQueryService.getIssuerInfo().getDid()))
+                .manager(issuerInfoQueryService.getIssuerInfo().getDid())
                 .tags(issueProfile.getTags())
                 .build();
 
@@ -143,7 +143,7 @@ public class ListCommunityService {
 
         RegisterVcPlanReqDto request = RegisterVcPlanReqDto.builder()
                 .vcPlan(vcPlanEncode)
-                .issuerDid(ISSUER_DID)
+                .issuerDid(issuerInfoQueryService.getIssuerInfo().getDid())
                 .initiate(issueProfile.getInitiateType().getType())
                 .build();
 
@@ -204,7 +204,7 @@ public class ListCommunityService {
         String credentialSchemaJson = BaseMultibaseUtil.encode(credentialSchema.toJson().getBytes(StandardCharsets.UTF_8));
         RegisterCredentialSchemaReqDto request = RegisterCredentialSchemaReqDto.builder()
                 .credentialSchema(credentialSchemaJson)
-                .issuerDid(ISSUER_DID)
+                .issuerDid(issuerInfoQueryService.getIssuerInfo().getDid())
                 .build();
         try {
             HttpClientUtil.postData(TAS_URL + UrlConstant.List.V1 + UrlConstant.List.CREDENTIAL_SCHEMA_PUBLIC,
@@ -226,7 +226,7 @@ public class ListCommunityService {
         String credentialDefinitionJson = BaseMultibaseUtil.encode(credentialDefinition.toJson().getBytes(StandardCharsets.UTF_8));
         RegisterCredentialDefinitionReqDto request = RegisterCredentialDefinitionReqDto.builder()
                 .credentialDefinition(credentialDefinitionJson)
-                .issuerDid(ISSUER_DID)
+                .issuerDid(issuerInfoQueryService.getIssuerInfo().getDid())
                 .build();
         try {
             HttpClientUtil.postData(TAS_URL + UrlConstant.List.V1 + UrlConstant.List.CREDENTIAL_DEFINITION_PUBLIC,
