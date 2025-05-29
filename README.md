@@ -32,7 +32,7 @@ did-issuer-server
 │       └── OpenDID_IssuerServer_Installation_Guide.md
 └── source
     └── did-issuer-admin
-        ├── frontend
+        └── frontend
     └── did-issuer-server
 ```
 

@@ -252,6 +252,21 @@ public class ErrorResponse {
 | SSRVISS00815 | Failed to communicate with tas: unknown error occurred.      | -           | Verify TAS server connectivity.            |
 | SSRVISS00816 | Failed to ping the URL.                                      | -           | Check URL status.                          |
 | SSRVISS00817 | Failed to register admin: admin is already registered.       | -           | Skip or update existing admin.             |
+| SSRVISS00818 | Failed to save ZKP Namespace.                                               | -           | Check DB connection and namespace structure.             |
+| SSRVISS00819 | ZKP Namespace not found for the given ID.                                   | -           | Verify namespace ID exists before querying.              |
+| SSRVISS00820 | Failed to retrieve ZKP Namespace.                                           | -           | Ensure namespace exists and is accessible.               |
+| SSRVISS00821 | Failed to update ZKP Namespace.                                             | -           | Check input data and DB update logic.                    |
+| SSRVISS00822 | Failed to delete ZKP Namespace.                                             | -           | Confirm deletable state and retry.                       |
+| SSRVISS00823 | Failed to save ZKP Schema.                                                  | -           | Ensure schema is valid and DB save logic is correct.     |
+| SSRVISS00824 | ZKP Attribute not found for the given ID.                                   | -           | Check the attribute ID or input source.                  |
+| SSRVISS00825 | Failed to register ZKP Schema. (Blockchain or List Provider)                | -           | Check external system status and registration logic.     |
+| SSRVISS00826 | Failed to register ZKP Schema: schema ID already exists.                    | -           | Use a unique schema ID when registering.                 |
+| SSRVISS00827 | ZKP Schema not found for the given ID.                                      | -           | Verify schema ID before accessing.                       |
+| SSRVISS00828 | Failed to register ZKP Credential Definition: alias already exists.         | -           | Use a different alias for registration.                  |
+| SSRVISS00829 | Failed to generate ZKP Credential Definition.                               | -           | Check schema structure and generation logic.             |
+| SSRVISS00830 | Failed to register ZKP Credential Definition. (Blockchain or List Provider) | -           | Verify external systems and credentials.                 |
+| SSRVISS00831 | ZKP Credential Definition not found for the given ID.                       | -           | Check the definition ID and confirm registration status. |
+| SSRVISS00832 | ZKP Credential schema is already in use.                | -           | Ensure the schema is not already registered or used. |
 
 <br>
 
