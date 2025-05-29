@@ -19,7 +19,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.omnione.did.base.db.constant.ZkpCredentialDefinitionStatus;
-import org.omnione.did.base.db.constant.ZkpSchemaStatus;
 import org.omnione.did.base.db.domain.IssuerInfo;
 import org.omnione.did.base.db.domain.ZkpCredentialDefinition;
 import org.omnione.did.base.db.domain.ZkpSchema;
@@ -43,8 +42,6 @@ import org.omnione.did.zkp.exception.ZkpException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Transactional
@@ -72,7 +69,7 @@ public class ZkpDefinitionService {
     public EmptyResDto createZkpCredentialDefinition(ZkpCredentialDefinitionSaveDto request) {
         // Find Issuer Info
         log.debug("Finding Issuer Info");
-        IssuerInfo issuerInfo = issuerInfoQueryService.findIssuerInfo();
+        IssuerInfo issuerInfo = issuerInfoQueryService.getIssuerInfo();
         log.debug("Found Issuer Info: {}", issuerInfo);
 
         // Find Schema
@@ -126,6 +123,7 @@ public class ZkpDefinitionService {
             return generatedCredentialDefinition;
         } catch (OpenDidException | ZkpException e) {
             log.error("Error generating Credential Definition", e);
+            zkpWalletService.deleteZkpKeyByAlias(request.getAlias());
             throw new OpenDidException(ErrorCode.CREDENTIAL_DEFINITION_GENERATION_FAILED);
         }
     }

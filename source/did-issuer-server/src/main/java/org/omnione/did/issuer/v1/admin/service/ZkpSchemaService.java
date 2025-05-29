@@ -71,7 +71,7 @@ public class ZkpSchemaService {
     public EmptyResDto createZkpSchema(ZkpSchemaInfoDto request) {
         // Find Issuer Info
         log.debug("Finding Issuer Info");
-        IssuerInfo issuerInfo = issuerInfoQueryService.findIssuerInfo();
+        IssuerInfo issuerInfo = issuerInfoQueryService.getIssuerInfo();
         log.debug("Found Issuer Info: {}", issuerInfo);
 
         // Generate Schema ID
