@@ -23,8 +23,7 @@ Open DID Issuer Server Installation Guide
 
 목차
 ==
-- [Open DID Issuer Server Installation Guide](#open-did-issuer-server-installation-guide)
-- [목차](#목차)
+
 - [1. 소개](#1-소개)
   - [1.1. 개요](#11-개요)
   - [1.2. Issuer 서버 정의](#12-issuer-서버-정의)
@@ -39,17 +38,7 @@ Open DID Issuer Server Installation Guide
 - [4. 서버 구동 방법](#4-서버-구동-방법)
   - [4.1. IDE로 구동하기 (Gradle 및 React 프로젝트 실행)](#41-ide로-구동하기-gradle-및-react-프로젝트-실행)
     - [4.1.1. IntelliJ IDEA에서 백엔드(Spring Boot) 실행](#411-intellij-idea에서-백엔드spring-boot-실행)
-      - [1. IntelliJ IDEA 설치](#1-intellij-idea-설치)
-      - [2. 프로젝트 열기](#2-프로젝트-열기)
-      - [3. Gradle 빌드](#3-gradle-빌드)
-      - [4. 서버 실행](#4-서버-실행)
-      - [5. 데이터베이스 설치](#5-데이터베이스-설치)
-      - [6. 서버 설정](#6-서버-설정)
     - [4.1.2. VS Code에서 프론트엔드(React) 실행](#412-vs-code에서-프론트엔드react-실행)
-      - [1. VS Code 설치](#1-vs-code-설치)
-      - [2. 프로젝트 열기](#2-프로젝트-열기-1)
-      - [3. 의존성 설치](#3-의존성-설치)
-      - [4. 개발 서버 실행](#4-개발-서버-실행)
   - [4.2. 콘솔 명령어로 구동하기](#42-콘솔-명령어로-구동하기)
     - [4.2.1. Gradle 빌드 명령어](#421-gradle-빌드-명령어)
     - [4.2.2. 서버 구동 방법](#422-서버-구동-방법)
@@ -72,9 +61,6 @@ Open DID Issuer Server Installation Guide
   - [5.5.1. Blockchain 설정](#551-blockchain-설정)
   - [5.6. blockchain.properties](#56-blockchainproperties)
     - [5.6.1. 블록체인 연동 설정](#561-블록체인-연동-설정)
-      - [EVM Network Configuration](#evm-network-configuration)
-      - [EVM Contract Configuration](#evm-contract-configuration)
-      - [Fabric Network Configuration](#fabric-network-configuration)
 - [6. 프로파일 설정 및 사용](#6-프로파일-설정-및-사용)
   - [6.1. 프로파일 개요 (`sample`, `dev`)](#61-프로파일-개요-sample-dev)
     - [6.1.1. `sample` 프로파일](#611-sample-프로파일)
@@ -565,27 +551,6 @@ logging:
 - `evm.connection.privateKey:`: 
   - API 접근 통제에 사용되는 k1 키, hardhat.config.js 내부 accounts에 정의된 키 문자열을 입력(앞에 0x 문자열은 제거)하면 Owner 권한으로 API 호출 가능(Default 설정), 상세 가이드는 [DID Besu Contract] 참조바랍니다.
   - 예시: 0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63
-
-#### Fabric Network Configuration
-- `fabric.configFilePath:`: 
-  - Hyperledger Fabric의 접속 정보 파일이 위치한 경로를 설정합니다. 해당 파일은 Hyperledger Fabric 테스트 네트워크 설치시 자동으로 생성되며, 기본 파일명은 'connection-org1.json' 입니다.
-  - 예시: {yourpath}/connection-org1.json
-
-- `fabric.privateKeyFilePath:`: 
-  - Hyperledger Fabric의 클라이언트가 네트워크 상에서 트랜잭션 서명과 인증을 위해 사용하는 개인 키 파일 경로를 설정합니다. 해당 파일은 Hyperledger Fabric 테스트 네트워크 설치시 자동으로 생성됩니다.
-  - 예시: {yourpath}/{개인키 파일명}
-
-- `fabric.certificateFilePath:`: 
-  - Hyperledger Fabric의 클라이언트 인증서가 위치한 경로를 설정합니다. 해당 파일은 Hyperledger Fabric 테스트 네트워크 설치시 자동으로 생성되며, 기본 파일명은 'cert.pem' 입니다.
-  - 예시: /etc/hyperledger/fabric/certs/cert.pem
-
-- `fabric.mychannel:`: 
-  - Hyperledger Fabric에서 사용하는 프파이빗 네트워크(채널) 이름입니다. Hyperledger Fabric 테스트 네트워크 설치시 입력한 채널명을 설정해야 합니다.
-  - 예시: mychannel
-
-- `fabric.chaincodeName:`: 🔒
-  - Hyperledger Fabric에서 사용하는 Open DID의 체인코드 이름입니다. 해당 값은 'opendid'로 고정입니다.
-  - 예시: opendid
 
 <br/>
 

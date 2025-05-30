@@ -31,11 +31,6 @@ OpenDID IssuerAdmin Operation Guide
 
 목차
 ==
-
-
-- [OpenDID IssuerAdmin Operation Guide](#opendid-issueradmin-operation-guide)
-- [개정 이력](#개정-이력)
-- [목차](#목차)
 - [1. 소개](#1-소개)
   - [1.1. 개요](#11-개요)
   - [1.2. Admin Console 정의](#12-admin-console-정의)
