@@ -110,7 +110,7 @@ const IssueProfileRegistrationPage = (props: Props) => {
     const [initialData, setInitialData] = useState<IssueProfileFormData | null>(null);
 
     // 서버로 데이터 전송
-    const handleSubmit = async () => {
+    const handleSubmit = async () => {        
         if (!validate()) return;
 
         const requestBody: any = {
@@ -127,10 +127,13 @@ const IssueProfileRegistrationPage = (props: Props) => {
             language: formData.language,
             tags: formData.tags,
             zkpEnabled: formData.zkpEnabled,
-
+            definitionId: '',          
         };
-
         if (formData.initiateType === 'issuer_init' && formData.zkpEnabled) {
+            requestBody.definitionId = selectedZkpItemId;
+            if (!selectedZkpItemId) {
+               requestBody.definitionId = formData.definitionId;
+            } 
             requestBody.definitionId = selectedZkpItemId;
         } else {
             requestBody.definitionId = null;
