@@ -126,17 +126,19 @@ const IssueProfileRegistrationPage = (props: Props) => {
             initiateType: formData.initiateType,
             language: formData.language,
             tags: formData.tags,
-            zkpEnabled: formData.zkpEnabled,
-            definitionId: '',          
+            zkpEnabled: formData.zkpEnabled,                      
         };
+        
         if (formData.initiateType === 'issuer_init' && formData.zkpEnabled) {
             requestBody.definitionId = selectedZkpItemId;
             if (!selectedZkpItemId) {
                requestBody.definitionId = formData.definitionId;
-            } 
-            requestBody.definitionId = selectedZkpItemId;
+            }             
         } else {
             requestBody.definitionId = null;
+        }
+        if (formData.initiateType === 'user_init') {
+            requestBody.zkpEnabled = false;      
         }
         const result = await dialogs.open(CustomConfirmDialog, {
             title: 'Confirmation',

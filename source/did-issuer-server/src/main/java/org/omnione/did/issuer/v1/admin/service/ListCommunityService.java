@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service for interacting with the List Community endpoints in the Admin Console.
@@ -128,7 +129,7 @@ public class ListCommunityService {
                 .tags(issueProfile.getTags())
                 .build();
 
-        if (issueProfile.getZkpEnabled()) {
+        if (issueProfile.getZkpEnabled() && Objects.equals(issueProfile.getInitiateType().getType(), InitiateType.ISSUER_INIT.getType())) {
             ZkpCredentialDefinition definition = zkpCredentialDefinitionQueryService.findByDefinitionId(issueProfile.getDefinitionId());
 
             org.omnione.did.base.datamodel.data.zkp.CredentialDefinition credentialDefinition = new org.omnione.did.base.datamodel.data.zkp.CredentialDefinition();
