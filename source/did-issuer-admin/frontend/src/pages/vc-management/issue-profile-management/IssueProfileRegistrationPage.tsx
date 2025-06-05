@@ -63,9 +63,9 @@ interface ErrorState {
   definitionId?: string;
 }
 
-const cipherOptions = ["AES-128-CBC", "AES-128-ECB", "AES-256-CBC", "AES-256-ECB"];
+const cipherOptions = ["AES-256-CBC"];
 const curveOptions = ["Secp256r1"];
-const paddingOptions = ["PKCS5", "OAEP"];
+const paddingOptions = ["PKCS5"];
 const initiateTypeOptions = [{ key: "User Initiate", value: "user_init" },
 { key: "Issuer Initiate", "value": "issuer_init" }
 ];
