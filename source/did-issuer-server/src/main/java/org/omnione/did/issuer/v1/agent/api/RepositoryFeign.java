@@ -80,17 +80,17 @@ public interface RepositoryFeign {
 
     /**
      * Get a Credential Schema by schema-id
-     * @param credentialSchemaId the credential schema id
+     * @param schemaId the credential schema id
      * @return the encoded Credential Schema
      */
     @GetMapping("/credential-schema")
-    String getCredentialSchema(@RequestParam String credentialSchemaId);
+    String getCredentialSchema(@RequestParam(name = "schemaId") String schemaId);
 
     /**
      * Get a Credential Definition by credential-definition-id
-     * @param credentialDefinitionId the credential definition id
+     * @param definitionId the credential definition id
      * @return the encoded Credential Definition
      */
     @GetMapping("/credential-definition")
-    String getCredentialDefinition(@RequestParam String credentialDefinitionId);
+    String getCredentialDefinition(@RequestParam(name = "definitionId") String definitionId);
 }
