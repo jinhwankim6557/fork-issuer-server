@@ -178,6 +178,9 @@ public enum ErrorCode {
     ZKP_CREDENTIAL_DEFINITION_NOT_FOUND("00831", "ZKP Credential Definition not found for the given ID.", 400),
     CREDENTIAL_DEFINITION_SCHEMA_ALREADY_IN_USE("00832", "ZKP Credential schema is already in use.", 400),
 
+    // 1000~ 10999 = Ledger Service Server
+    LSS_FIND_VC_META_FAILED("01000", "Failed to find VC Meta.", 500),
+
     TAS_UNKNOWN_RESPONSE("000900", "Failed to process response: received unknown data from the Tas.", 500),
 
     UNKNOWN_SERVER_ERROR("99999", "An unknown server error.", 500),

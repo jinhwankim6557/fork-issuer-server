@@ -16,6 +16,8 @@ spring:
           - logging
           - spring-docs
           - blockchain
+        lls:
+          - lls
   jackson:
     default-property-inclusion: non_null
     serialization:

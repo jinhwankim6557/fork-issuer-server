@@ -16,12 +16,14 @@
 
 package org.omnione.did.issuer.v1.common.service;
 
+import com.google.gson.JsonSyntaxException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.omnione.did.base.exception.ErrorCode;
 import org.omnione.did.base.exception.OpenDidException;
 import org.omnione.did.base.util.BaseCoreDidUtil;
+import org.omnione.did.base.util.BaseCoreVcUtil;
 import org.omnione.did.base.util.BaseMultibaseUtil;
 import org.omnione.did.common.util.DidUtil;
 import org.omnione.did.core.manager.DidManager;
@@ -30,9 +32,12 @@ import org.omnione.did.data.model.enums.vc.VcStatus;
 import org.omnione.did.data.model.vc.VcMeta;
 import org.omnione.did.issuer.v1.agent.api.RepositoryFeign;
 import org.omnione.did.issuer.v1.agent.api.dto.DidDocApiResDto;
+import org.omnione.did.issuer.v1.agent.api.dto.InputZkpCredentialDefinitionReqDto;
+import org.omnione.did.issuer.v1.agent.api.dto.InputZkpCredentialSchemaReqDto;
 import org.omnione.did.issuer.v1.agent.api.dto.UpdateVcStatusApiReqDto;
 import org.omnione.did.zkp.datamodel.definition.CredentialDefinition;
 import org.omnione.did.zkp.datamodel.schema.CredentialSchema;
+import org.omnione.did.zkp.datamodel.util.GsonWrapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -61,14 +66,9 @@ public class RepositoryServiceImpl implements StorageService {
     @Override
     public DidDocument findDidDoc(String didKeyUrl) {
         try {
-            String did = DidUtil.extractDid(didKeyUrl);
+            String didDocument = repositoryFeign.getDid(didKeyUrl);
 
-            DidDocApiResDto didDocApiResDto = repositoryFeign.getDid(did);
-
-            byte[] decodedDidDoc = BaseMultibaseUtil.decode(didDocApiResDto.getDidDoc());
-
-            String didDocJson = new String(decodedDidDoc);
-            DidManager didManager = BaseCoreDidUtil.parseDidDoc(didDocJson);
+            DidManager didManager = BaseCoreDidUtil.parseDidDoc(didDocument);
 
             return didManager.getDocument();
         } catch (FeignException e) {
@@ -76,7 +76,7 @@ public class RepositoryServiceImpl implements StorageService {
             throw new OpenDidException(ErrorCode.DID_DOC_FIND_FAILURE);
         } catch (Exception e) {
             log.error("Failed to find DID document.", e);
-            throw new OpenDidException(ErrorCode.UNKNOWN_SERVER_ERROR);
+            throw new OpenDidException(ErrorCode.DID_DOC_FIND_FAILURE);
         }
     }
 
@@ -113,32 +113,107 @@ public class RepositoryServiceImpl implements StorageService {
      */
     @Override
     public VcMeta getVcMetaByVcId(String vcId) {
-        String encodedVcMeta = repositoryFeign.getVcMetaData(vcId).getVcMeta();
-        byte[] decodedVcMeta = BaseMultibaseUtil.decode(encodedVcMeta);
-        String jsonVcMeta = new String(decodedVcMeta, StandardCharsets.UTF_8);
+        try {
+            String vcMetaData = repositoryFeign.getVcMetaData(vcId);
 
-        VcMeta vcMeta = new VcMeta();
-        vcMeta.fromJson(jsonVcMeta);
-        return vcMeta;
+            return BaseCoreVcUtil.parseVcMeta(vcMetaData);
+        } catch (OpenDidException e) {
+            log.error("Failed to find VC meta data.", e);
+            throw e;
+        } catch (FeignException e) {
+            log.error("Failed to find VC meta data.", e);
+            throw new OpenDidException(ErrorCode.LSS_FIND_VC_META_FAILED);
+        } catch (Exception e) {
+            log.error("Failed to find VC meta data.", e);
+            throw new OpenDidException(ErrorCode.LSS_FIND_VC_META_FAILED);
+        }
     }
 
     @Override
     public void registerCredentialSchema(CredentialSchema credentialSchema) {
-        repositoryFeign.registerCredentialSchema(credentialSchema);
+        String encodedCredentialSchema = encodeCredentialSchema(credentialSchema);
+        repositoryFeign.registerCredentialSchema(
+                InputZkpCredentialSchemaReqDto.builder()
+                        .credentialSchema(encodedCredentialSchema)
+                        .build()
+        );
+    }
+
+    private String encodeCredentialSchema(CredentialSchema credentialSchema) {
+        try {
+            String credentialSchemaJson = GsonWrapper.getGson().toJson(credentialSchema);
+            return BaseMultibaseUtil.encode(credentialSchemaJson.getBytes(StandardCharsets.UTF_8));
+        } catch (JsonSyntaxException e) {
+            log.error("\t--> Failed to encode Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
+        } catch (Exception e) {
+            log.error("\t--> Unexpected error while encoding Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
+        }
     }
 
     @Override
     public void registerCredentialDefinition(CredentialDefinition credentialDefinition) {
-        repositoryFeign.registerCredentialDefinition(credentialDefinition);
+        String encodedCredentialDefinition = encodeCredentialDefinition(credentialDefinition);
+        repositoryFeign.registerCredentialDefinition(
+                InputZkpCredentialDefinitionReqDto.builder()
+                        .credentialDefinition(encodedCredentialDefinition)
+                        .build()
+        );
+    }
+
+    private String encodeCredentialDefinition(CredentialDefinition credentialDefinition) {
+        try {
+            String credentialDefinitionJson = GsonWrapper.getGson().toJson(credentialDefinition);
+            return BaseMultibaseUtil.encode(credentialDefinitionJson.getBytes(StandardCharsets.UTF_8));
+        } catch (JsonSyntaxException e) {
+            log.error("\t--> Failed to encode Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
+        } catch (Exception e) {
+            log.error("\t--> Unexpected error while encoding Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
+        }
     }
 
     @Override
     public CredentialSchema getCredentialSchema(String credentialSchemaId) {
-        return repositoryFeign.getCredentialSchema(credentialSchemaId);
+        String encodedCredentialSchema = repositoryFeign.getCredentialSchema(credentialSchemaId);
+        return decodeAndParseCredentialSchema(encodedCredentialSchema);
+    }
+
+    private CredentialSchema decodeAndParseCredentialSchema(String encodedCredentialSchema) {
+        try {
+            log.debug("\t--> Decoding Credential Schema");
+            byte[] decodedData = BaseMultibaseUtil.decode(encodedCredentialSchema);
+
+            return GsonWrapper.getGson().fromJson(new String(decodedData), CredentialSchema.class);
+        } catch (JsonSyntaxException e) {
+            log.error("\t--> Failed to decode or parse Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_DECODING_FAILED);
+        } catch (Exception e) {
+            log.error("\t--> Unexpected error while decoding Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_DECODING_FAILED);
+        }
     }
 
     @Override
     public CredentialDefinition getCredentialDefinition(String credentialDefinitionId) {
-        return repositoryFeign.getCredentialDefinition(credentialDefinitionId);
+        String encodedCredentialDefinition = repositoryFeign.getCredentialDefinition(credentialDefinitionId);
+        return decodeAndParseCredentialDefinition(encodedCredentialDefinition);
+    }
+
+    private CredentialDefinition decodeAndParseCredentialDefinition(String encodedCredentialDefinition) {
+        try {
+            log.debug("\t--> Decoding Credential Definition");
+            byte[] decodedData = BaseMultibaseUtil.decode(encodedCredentialDefinition);
+
+            return GsonWrapper.getGson().fromJson(new String(decodedData), CredentialDefinition.class);
+        } catch (JsonSyntaxException e) {
+            log.error("\t--> Failed to decode Credential Definition: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_DECODING_FAILED);
+        } catch (Exception e) {
+            log.error("\t--> Unexpected error while decoding Credential Definition: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_DECODING_FAILED);
+        }
     }
 }
