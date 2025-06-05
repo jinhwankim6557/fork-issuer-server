@@ -20,8 +20,6 @@ package org.omnione.did.issuer.v1.agent.api;
 import org.omnione.did.base.constants.UrlConstant;
 import org.omnione.did.data.model.vc.VcMeta;
 import org.omnione.did.issuer.v1.agent.api.dto.*;
-import org.omnione.did.zkp.datamodel.definition.CredentialDefinition;
-import org.omnione.did.zkp.datamodel.schema.CredentialSchema;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.openfeign.FeignClient;
 
@@ -30,7 +28,7 @@ import org.springframework.cloud.openfeign.FeignClient;
  * RepositoryFeign
  * This is a Feign client that communicates with the Storage API.
  */
-@FeignClient(value = "Storage", url = "${lls.url:http://127.0.0.1:8098}" + UrlConstant.LLS.V1)
+@FeignClient(value = "Storage", url = "${lss.url:http://127.0.0.1:8098}" + UrlConstant.LSS.V1)
 public interface RepositoryFeign {
 
     /**
@@ -39,7 +37,7 @@ public interface RepositoryFeign {
      * @param did DID to get the document for.
      * @return Found DID document.
      */
-    @GetMapping(UrlConstant.LLS.DID)
+    @GetMapping(UrlConstant.LSS.DID)
     String getDid(@RequestParam(name = "did") String did);
 
     /**
@@ -48,14 +46,14 @@ public interface RepositoryFeign {
      * @param vcId Identifier of the Verifiable Credential.
      * @return Found VC metadata.
      */
-    @GetMapping(UrlConstant.LLS.VC_META)
+    @GetMapping(UrlConstant.LSS.VC_META)
     String getVcMetaData(@RequestParam(name = "vcId") String vcId);
 
     /**
      * Register a VC metadata.
      * @param vcMeta VC Metadata to register
      */
-    @PostMapping(UrlConstant.LLS.VC_META)
+    @PostMapping(UrlConstant.LSS.VC_META)
     void inputVcMeta(@RequestBody VcMeta vcMeta);
 
     /**
@@ -63,7 +61,7 @@ public interface RepositoryFeign {
      *
      * @param request Request containing the VC ID and the new status.
      */
-    @PatchMapping(UrlConstant.LLS.VC_META)
+    @PatchMapping(UrlConstant.LSS.VC_META)
     void updateVcStatus(@RequestBody UpdateVcStatusApiReqDto request);
 
     /**
