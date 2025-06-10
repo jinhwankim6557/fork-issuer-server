@@ -28,8 +28,10 @@ import org.omnione.did.base.util.BaseMultibaseUtil;
 import org.omnione.did.core.manager.DidManager;
 import org.omnione.did.data.model.did.DidDocument;
 import org.omnione.did.data.model.enums.vc.VcStatus;
+import org.omnione.did.data.model.schema.VcSchema;
 import org.omnione.did.data.model.vc.VcMeta;
 import org.omnione.did.issuer.v1.agent.api.RepositoryFeign;
+import org.omnione.did.issuer.v1.agent.api.dto.InputVcSchemaReqDto;
 import org.omnione.did.issuer.v1.agent.api.dto.InputZkpCredentialDefinitionReqDto;
 import org.omnione.did.issuer.v1.agent.api.dto.InputZkpCredentialSchemaReqDto;
 import org.omnione.did.issuer.v1.agent.api.dto.UpdateVcStatusApiReqDto;
@@ -160,6 +162,21 @@ public class RepositoryServiceImpl implements StorageService {
         );
     }
 
+    @Override
+    public void registerVcSchema(VcSchema vcSchema) {
+        String encodedVcSchema = encodeVcSchema(vcSchema);
+        repositoryFeign.registerVcSchema(
+                InputVcSchemaReqDto.builder()
+                        .vcSchema(encodedVcSchema)
+                        .build()
+        );
+    }
+
+    @Override
+    public VcSchema getVcSchema(String vcSchemaId) {
+        return null;
+    }
+
     private String encodeCredentialDefinition(CredentialDefinition credentialDefinition) {
         try {
             String credentialDefinitionJson = GsonWrapper.getGson().toJson(credentialDefinition);
@@ -172,6 +189,22 @@ public class RepositoryServiceImpl implements StorageService {
             throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
         }
     }
+
+
+    private String encodeVcSchema(VcSchema vcSchema) {
+        try {
+            String vcSchemaJson = GsonWrapper.getGson().toJson(vcSchema);
+            return BaseMultibaseUtil.encode(vcSchemaJson.getBytes(StandardCharsets.UTF_8));
+        } catch (JsonSyntaxException e) {
+            log.error("\t--> Failed to encode Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
+        } catch (Exception e) {
+            log.error("\t--> Unexpected error while encoding Credential Schema: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
+        }
+    }
+
+
 
     @Override
     public CredentialSchema getCredentialSchema(String credentialSchemaId) {

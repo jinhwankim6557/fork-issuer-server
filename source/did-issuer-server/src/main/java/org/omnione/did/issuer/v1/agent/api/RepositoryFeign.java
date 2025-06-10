@@ -93,4 +93,19 @@ public interface RepositoryFeign {
      */
     @GetMapping("/credential-definition")
     String getCredentialDefinition(@RequestParam(name = "definitionId") String definitionId);
+
+    /**
+     * Register a ZKP Credential Definition.
+     * @param credentialDefinition Credential Definition to register
+     */
+    @PostMapping("/vc-schema")
+    void registerVcSchema(InputVcSchemaReqDto vcSchema);
+
+    /**
+     * Get a Credential Schema by schema-id
+     * @param schemaId the credential schema id
+     * @return the encoded Credential Schema
+     */
+    @GetMapping("/vc-schema")
+    String getVcSchema(@RequestParam(name = "schemaId") String schemaId);
 }
