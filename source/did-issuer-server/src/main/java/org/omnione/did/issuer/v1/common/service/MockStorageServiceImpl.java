@@ -3,6 +3,7 @@ package org.omnione.did.issuer.v1.common.service;
 import lombok.extern.slf4j.Slf4j;
 import org.omnione.did.data.model.did.DidDocument;
 import org.omnione.did.data.model.enums.vc.VcStatus;
+import org.omnione.did.data.model.schema.VcSchema;
 import org.omnione.did.data.model.vc.VcMeta;
 import org.omnione.did.zkp.datamodel.definition.CredentialDefinition;
 import org.omnione.did.zkp.datamodel.schema.CredentialSchema;
@@ -42,6 +43,16 @@ public class MockStorageServiceImpl implements StorageService {
     @Override
     public void registerCredentialDefinition(CredentialDefinition credentialDefinition) {
 
+    }
+
+    @Override
+    public void registerVcSchema(VcSchema vcSchema, String did) {
+
+    }
+
+    @Override
+    public VcSchema getVcSchema(String vcSchemaId) {
+        return null;
     }
 
     @Override

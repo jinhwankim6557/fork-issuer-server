@@ -163,10 +163,11 @@ public class RepositoryServiceImpl implements StorageService {
     }
 
     @Override
-    public void registerVcSchema(VcSchema vcSchema) {
+    public void registerVcSchema(VcSchema vcSchema, String did) {
         String encodedVcSchema = encodeVcSchema(vcSchema);
         repositoryFeign.registerVcSchema(
                 InputVcSchemaReqDto.builder()
+                        .did(did)
                         .vcSchema(encodedVcSchema)
                         .build()
         );
@@ -174,7 +175,8 @@ public class RepositoryServiceImpl implements StorageService {
 
     @Override
     public VcSchema getVcSchema(String vcSchemaId) {
-        return null;
+        String vcSchema = repositoryFeign.getVcSchema(vcSchemaId);
+        return GsonWrapper.getGson().fromJson(vcSchema, VcSchema.class);
     }
 
     private String encodeCredentialDefinition(CredentialDefinition credentialDefinition) {
@@ -190,7 +192,6 @@ public class RepositoryServiceImpl implements StorageService {
         }
     }
 
-
     private String encodeVcSchema(VcSchema vcSchema) {
         try {
             String vcSchemaJson = GsonWrapper.getGson().toJson(vcSchema);
@@ -203,8 +204,6 @@ public class RepositoryServiceImpl implements StorageService {
             throw new OpenDidException(ErrorCode.CRYPTO_ENCODING_FAILED);
         }
     }
-
-
 
     @Override
     public CredentialSchema getCredentialSchema(String credentialSchemaId) {

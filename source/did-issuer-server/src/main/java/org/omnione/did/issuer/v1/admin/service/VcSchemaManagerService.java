@@ -19,11 +19,16 @@ package org.omnione.did.issuer.v1.admin.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.omnione.did.base.db.domain.IssuerInfo;
 import org.omnione.did.base.db.domain.Namespace;
 import org.omnione.did.base.db.domain.VcSchema;
 import org.omnione.did.base.db.domain.VcSchemaNamespace;
 import org.omnione.did.base.exception.ErrorCode;
 import org.omnione.did.base.exception.OpenDidException;
+import org.omnione.did.data.model.schema.MetaData;
+import org.omnione.did.data.model.schema.SchemaClaims;
+import org.omnione.did.data.model.schema.SchemaCredentialSubject;
 import org.omnione.did.issuer.v1.admin.dto.vc.CreateVcSchemaResDto;
 import org.omnione.did.issuer.v1.admin.dto.vc.GetVcSchemaResDto;
 import org.omnione.did.issuer.v1.admin.dto.vc.VcSchemaDto;
@@ -31,6 +36,9 @@ import org.omnione.did.issuer.v1.admin.dto.vc.VcSchemaReqDto;
 import org.omnione.did.issuer.v1.admin.service.query.IssueProfileQueryService;
 import org.omnione.did.issuer.v1.admin.service.query.NamespaceQueryService;
 import org.omnione.did.issuer.v1.admin.service.query.VcSchemaQueryService;
+import org.omnione.did.issuer.v1.agent.helper.VcServiceHelper;
+import org.omnione.did.issuer.v1.agent.service.query.IssuerInfoQueryService;
+import org.omnione.did.issuer.v1.common.service.StorageService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -50,12 +58,16 @@ import java.util.stream.Collectors;
 @Profile("!sample")
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class VcSchemaManagerService {
 
     private final VcSchemaQueryService vcSchemaQueryService;
     private final NamespaceQueryService namespaceQueryService;
     private final IssueProfileQueryService issueProfileQueryService;
     private final ListCommunityService listCommunityService;
+    private final StorageService storageService;
+    private final IssuerInfoQueryService issuerInfoQueryService;
+    private final VcServiceHelper vcServiceHelper;
 
     /**
      * Creates a new VC schema and registers it to the List Community.
@@ -81,10 +93,26 @@ public class VcSchemaManagerService {
 
         vcSchemaQueryService.saveVcSchemaNamespace(vcSchemaNamespaceList);
         listCommunityService.registerVcSchema(vcSchema.getId());
+        registerVcSchemaToBlockchain(vcSchema);
 
         return CreateVcSchemaResDto.builder()
                 .vcSchemaId(vcSchema.getId())
                 .build();
+    }
+
+    public void registerVcSchemaToBlockchain(VcSchema vcSchemaInfo) {
+        try {
+            org.omnione.did.data.model.schema.VcSchema vcSchema = vcServiceHelper.getVcSchemaBySchemaId(vcSchemaInfo.getVcSchemaId());
+            IssuerInfo issuerInfo = issuerInfoQueryService.findIssuerInfo();
+
+            storageService.registerVcSchema(vcSchema, issuerInfo.getDid());
+        } catch (OpenDidException e) {
+            log.error("Failed to register VC schema to blockchain: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error while registering VC schema to blockchain: {}", e.getMessage());
+            throw new OpenDidException(ErrorCode.BLOCKCHAIN_VC_SCHEMA_REGISTRATION_FAILED);
+        }
     }
 
     /**

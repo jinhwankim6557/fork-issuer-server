@@ -134,6 +134,7 @@ public enum ErrorCode {
     BLOCKCHAIN_VC_META_REGISTRATION_FAILED("00604", "Failed to register VC meta on the blockchain.", 500),
     BLOCKCHAIN_VC_META_RETRIEVAL_FAILED("00605", "Failed to retrieve VC meta on the blockchain.", 500),
     BLOCKCHAIN_VC_STATUS_UPDATE_FAILED("00606", "Failed to update VC status on the blockchain.", 500),
+    BLOCKCHAIN_VC_SCHEMA_REGISTRATION_FAILED("00607", "Failed to register VC schema on the blockchain.", 500),
 
 
     // 700~ 799 = etc

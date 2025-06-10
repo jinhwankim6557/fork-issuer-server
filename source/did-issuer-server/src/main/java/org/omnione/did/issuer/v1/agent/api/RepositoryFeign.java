@@ -96,7 +96,7 @@ public interface RepositoryFeign {
 
     /**
      * Register a ZKP Credential Definition.
-     * @param credentialDefinition Credential Definition to register
+     * @param vcSchema the VC Schema to register
      */
     @PostMapping("/vc-schema")
     void registerVcSchema(InputVcSchemaReqDto vcSchema);

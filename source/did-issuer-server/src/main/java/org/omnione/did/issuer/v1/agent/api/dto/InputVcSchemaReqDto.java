@@ -24,5 +24,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InputVcSchemaReqDto {
+    private String did;
     private String vcSchema;
 }

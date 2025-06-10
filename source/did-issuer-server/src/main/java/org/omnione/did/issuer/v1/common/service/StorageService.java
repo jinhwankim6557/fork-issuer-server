@@ -58,7 +58,7 @@ public interface StorageService {
     void registerCredentialSchema(CredentialSchema credentialSchema);
     void registerCredentialDefinition(CredentialDefinition credentialDefinition);
 
-    void registerVcSchema(VcSchema vcSchema);
+    void registerVcSchema(VcSchema vcSchema, String did);
     VcSchema getVcSchema(String vcSchemaId);
 
     CredentialSchema getCredentialSchema(String credentialSchemaId);

@@ -145,7 +145,7 @@ public class BlockChainServiceImpl implements StorageService {
     }
 
     @Override
-    public void registerVcSchema(VcSchema vcSchema) {
+    public void registerVcSchema(VcSchema vcSchema, String did) {
         try {
             contractApi.registVcSchema(vcSchema);
         } catch (BlockChainException e) {
