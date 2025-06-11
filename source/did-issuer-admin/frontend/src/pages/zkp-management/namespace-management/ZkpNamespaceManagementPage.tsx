@@ -38,6 +38,22 @@ const ZkpNamespaceManagementPage = () => {
     [rows, selectedRow]
   );
 
+  const handleUpdate = async () => {
+    if (!selectedRowData) return;
+
+    if (selectedRowData.schemaCount > 0) {
+      await dialogs.open(CustomDialog, {
+        title: 'Notification',
+        message: 'This namespace is in use by one or more schemas and cannot be updated.',
+        isModal: true,
+      });
+      return;
+    }
+
+    navigate(`/zkp-management/zkp-namespace-management/zkp-namespace-edit/${selectedRowData.id}`);
+
+  }
+
   const handleDelete = async () => {
     if (!selectedRowData) return;
 
@@ -148,11 +164,7 @@ const ZkpNamespaceManagementPage = () => {
           ]}
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
-          onEdit={() => {
-              if (selectedRowData) {
-                navigate(`/zkp-management/zkp-namespace-management/zkp-namespace-edit/${selectedRowData.id}`);
-              }
-          }}
+          onEdit={handleUpdate}
           onRegister={() => navigate('/zkp-management/zkp-namespace-management/namespace-registration')}
           onDelete={handleDelete}
           paginationMode="server"
