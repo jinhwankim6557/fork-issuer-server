@@ -179,6 +179,7 @@ public enum ErrorCode {
     ZKP_CREDENTIAL_DEFINITION_NOT_FOUND("00831", "ZKP Credential Definition not found for the given ID.", 400),
     CREDENTIAL_DEFINITION_SCHEMA_ALREADY_IN_USE("00832", "ZKP Credential schema is already in use.", 400),
     VC_SCHEMA_REGISTRATION_FAILED("00833", "Failed to register VC Schema. (Blockchain or List Provider)", 500),
+    NAMESPACE_UPDATE_CONFLICT("00834", "Cannot update namespace: it is referenced by a VC schema.", 400),
 
 
     // 1000~ 10999 = Ledger Service Server

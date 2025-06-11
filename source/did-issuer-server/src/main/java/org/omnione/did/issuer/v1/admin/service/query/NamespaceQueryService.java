@@ -81,7 +81,7 @@ public class NamespaceQueryService {
      * @throws OpenDidException if the namespace is associated with a VC schema
      */
     public void deleteById(Long id) {
-        if (vcSchemaNamespaceRepository.existsByNamespaceId(id)) {
+        if (existsByNamespaceId(id)) {
             throw new OpenDidException(ErrorCode.NAMESPACE_DELETE_CONFLICT);
         }
         namespaceRepository.deleteById(id);
@@ -115,5 +115,9 @@ public class NamespaceQueryService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(namespaceDtos, pageable, entityPage.getTotalElements());
+    }
+
+    public boolean existsByNamespaceId(Long id) {
+        return vcSchemaNamespaceRepository.existsByNamespaceId(id);
     }
 }

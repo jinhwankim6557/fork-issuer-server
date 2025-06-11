@@ -133,13 +133,13 @@ const VcSchemaManagementPage = (props: Props) => {
           ]}
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
-          onEdit={() => {
-            if (selectedRowData) {
-              navigate(`/vc-management/vc-schema-management/vc-schema-edit/${selectedRowData.id}`);
-            }
-          }}
+          // onEdit={() => {
+          //   if (selectedRowData) {
+          //     navigate(`/vc-management/vc-schema-management/vc-schema-edit/${selectedRowData.id}`);
+          //   }
+          // }}
           onRegister={() => navigate('/vc-management/vc-schema-management/vc-schema-registration')}
-          onDelete={handleDelete}
+          // onDelete={handleDelete}
           additionalButtons={[
 
           ]}

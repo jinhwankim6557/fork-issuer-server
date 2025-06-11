@@ -19,6 +19,8 @@ package org.omnione.did.issuer.v1.admin.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.omnione.did.base.db.domain.Namespace;
+import org.omnione.did.base.exception.ErrorCode;
+import org.omnione.did.base.exception.OpenDidException;
 import org.omnione.did.data.model.schema.SchemaClaims;
 import org.omnione.did.issuer.v1.admin.dto.namespace.CreateNamespaceResDto;
 import org.omnione.did.issuer.v1.admin.dto.namespace.NamespaceDto;
@@ -80,6 +82,10 @@ public class NamespaceService {
      * @return the updated namespace DTO
      */
     public NamespaceDto updateNamespace(UpdateNamespaceReqDto request) {
+        if (namespaceQueryService.existsByNamespaceId(request.getId())) {
+            throw new OpenDidException(ErrorCode.NAMESPACE_UPDATE_CONFLICT);
+        }
+
         Namespace namespace = namespaceQueryService.findById(request.getId());
         namespace.setName(request.getSchemaClaims().getNamespace().getName());
         namespace.setRef(request.getSchemaClaims().getNamespace().getRef());
