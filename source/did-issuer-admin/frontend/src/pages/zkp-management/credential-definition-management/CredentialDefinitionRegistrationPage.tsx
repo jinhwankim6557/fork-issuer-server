@@ -65,6 +65,8 @@ const CredentialDefinitionRegistrationPage = () => {
   const [errors, setErrors] = useState<ErrorState>({});
   const [schemaList, setSchemaList] = useState<ZkpSchemaData[]>([]);
   const [isAliasIsValid, setIsAliasValid] = useState(false);
+  const [aliasCheckMessage, setAliasCheckMessage] = useState<string>('');
+  const [aliasCheckStatus, setAliasCheckStatus] = useState<'success' | 'error' | ''>('');
 
   const [formData, setFormData] = useState<FormData>({
     schemaId: '',
@@ -86,6 +88,8 @@ const CredentialDefinitionRegistrationPage = () => {
       tag: "",
     });
     setIsAliasValid(false);
+    setAliasCheckMessage('');
+    setAliasCheckStatus('');
   };
 
   const handleSchemaChange = (event: any) => {
@@ -104,6 +108,8 @@ const CredentialDefinitionRegistrationPage = () => {
     if (field === "alias") {
       setIsAliasValid(false);
       setErrors((prev) => ({ ...prev, alias: undefined }));
+      setAliasCheckMessage('');
+      setAliasCheckStatus('');
     }
   };
 
@@ -180,15 +186,30 @@ const CredentialDefinitionRegistrationPage = () => {
   };
 
   const handleCheckDuplicateDefinitionAlias = () => {
+    if (!formData.alias.trim()) {
+      setAliasCheckMessage('Please enter an alias first.');
+      setAliasCheckStatus('error');
+      return;
+    }
+
     verifyCredentialDefinitionAliasUnique(formData.alias)
     .then((response) => {
-        if (response.data.unique === false) {
+        if (response.data.isUnique === false) {
             setErrors((prev) => ({ ...prev, alias: 'Alias already exists.' }));
             setIsAliasValid(false);
+            setAliasCheckMessage('This alias is already in use. Please choose a different one.');
+            setAliasCheckStatus('error');
         } else {        
             setIsAliasValid(true);
             setErrors((prev) => ({ ...prev, alias: undefined }));
+            setAliasCheckMessage('This alias is available for use.');
+            setAliasCheckStatus('success');
         }
+    })
+    .catch((error) => {
+        setIsAliasValid(false);
+        setAliasCheckMessage('Failed to check alias availability. Please try again.');
+        setAliasCheckStatus('error');
     });
   };
 
@@ -268,7 +289,14 @@ const CredentialDefinitionRegistrationPage = () => {
               value={formData.alias}
               onChange={handleChange("alias")}
               error={!!errors.alias}
-              helperText={errors.alias}
+              helperText={errors.alias || aliasCheckMessage}
+              sx={{
+                '& .MuiFormHelperText-root': {
+                  color: aliasCheckStatus === 'success' ? 'green' : 
+                         aliasCheckStatus === 'error' ? 'red' : 'inherit',
+                  fontWeight: aliasCheckStatus ? 500 : 'inherit'
+                }
+              }}
             />
             <Button 
                 variant="contained" 

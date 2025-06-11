@@ -61,8 +61,14 @@ public class ZkpDefinitionService {
 
     public VerifyCredentialDefinitionAliasUniqueResDto verifyCredentialDefinitionAliasUnique(String alias) {
         long count = zkpCredentialDefinitionQueryService.countByAlias(alias);
+        boolean isUnique = count == 0;
+        
+        if (!isUnique) {
+            log.debug("Alias already exists: {}", alias);
+        }
+        
         return VerifyCredentialDefinitionAliasUniqueResDto.builder()
-                .isUnique(count == 0)
+                .isUnique(isUnique)
                 .build();
     }
 

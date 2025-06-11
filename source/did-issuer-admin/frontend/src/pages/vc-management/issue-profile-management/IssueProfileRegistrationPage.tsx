@@ -311,7 +311,7 @@ const IssueProfileRegistrationPage = (props: Props) => {
   // `tags` 입력 값 변경
   const handleChangeTag = (index: number, value: string) => {
     setFormData((prev) => {
-      const newTags = [...prev.endpoints];
+      const newTags = [...prev.tags];
       newTags[index] = value;
       return { ...prev, tags: newTags };
     });
