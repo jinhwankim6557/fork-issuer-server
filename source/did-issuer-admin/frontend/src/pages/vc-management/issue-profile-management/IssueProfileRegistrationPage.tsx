@@ -465,7 +465,16 @@ const IssueProfileRegistrationPage = (props: Props) => {
         <StyledTitle>Issue Profile Registration</StyledTitle>
 
         <StyledInputArea>
-          <TextField label="VC Plan ID *" fullWidth margin="normal" size="small" value={formData.vcPlanId} error={!!errors.vcPlanId} helperText={errors.vcPlanId} onChange={(e) => setFormData({ ...formData, vcPlanId: e.target.value })} />
+          <TextField 
+            label="VC Plan ID *" 
+            fullWidth 
+            margin="normal" 
+            size="small" 
+            value={formData.vcPlanId} 
+            error={!!errors.vcPlanId} 
+            helperText={errors.vcPlanId} 
+            onChange={(e) => setFormData({ ...formData, vcPlanId: e.target.value.replace(/\s+/g, '') })} 
+          />
           <TextField label="Title *" fullWidth margin="normal" size="small" value={formData.title} error={!!errors.title} helperText={errors.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           <TextField label="Description" fullWidth margin="normal" size="small" value={formData.description} error={!!errors.description} helperText={errors.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
 
