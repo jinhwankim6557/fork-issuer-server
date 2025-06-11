@@ -61,7 +61,7 @@ public interface RepositoryFeign {
      *
      * @param request Request containing the VC ID and the new status.
      */
-    @PatchMapping(UrlConstant.LSS.VC_META)
+    @PutMapping(UrlConstant.LSS.VC_META)
     void updateVcStatus(@RequestBody UpdateVcStatusApiReqDto request);
 
     /**
