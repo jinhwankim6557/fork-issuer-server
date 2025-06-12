@@ -92,4 +92,9 @@ public class UserInfoQueryService {
         return userRepository.findByPiiAndVcSchemaId(pii, vcSchemaId)
                 .orElse(User.builder().build());
     }
+
+    public User findByDidAndVcSchemaIdOrNew(String did, Long vcSchemaId) {
+        return userRepository.findByDidAndVcSchemaId(did, vcSchemaId)
+                .orElse(User.builder().build());
+    }
 }

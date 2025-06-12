@@ -74,8 +74,14 @@ public class UserManagementService {
         String vcSchemaName = extractNameOrUseAsIs(vcSchemaInput);
 
         Long vcSchemaId = vcSchemaQueryService.findByVcSchemaId(vcSchemaName).getId();
+        User existedUser;
 
-        User existedUser = userQueryService.findByPiiAndVcSchemaIdOrNew(request.getPii(), vcSchemaId);
+        if (request.getDid() != null) {
+            existedUser = userQueryService.findByDidAndVcSchemaIdOrNew(request.getDid(), vcSchemaId);
+        } else {
+            existedUser = userQueryService.findByPiiAndVcSchemaIdOrNew(request.getPii(), vcSchemaId);
+        }
+
         userQueryService.save(User.builder()
                 .id(existedUser.getId())
                 .did(request.getDid())
