@@ -31,4 +31,6 @@ public interface VcSchemaNamespaceRepository extends JpaRepository<VcSchemaNames
     void deleteAllByVcSchemaId(Long vcSchemaId);
 
     boolean existsByNamespaceId(Long namespaceId);
+
+    long countByNamespaceId(Long namespaceId);
 }

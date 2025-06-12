@@ -31,6 +31,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Service for managing namespace definitions in the Admin Console.
  * <p>
@@ -76,13 +79,47 @@ public class NamespaceService {
     }
 
     /**
+     * Searches namespaces by key and value with pagination support.
+     *
+     * @param searchKey   the field to filter on
+     * @param searchValue the value to match
+     * @param pageable    pagination information
+     * @return page of matching namespace DTOs with VC schema counts
+     */
+    public PageImpl<NamespaceDto> searchNamespaceList(String searchKey, String searchValue, Pageable pageable) {
+        PageImpl<NamespaceDto> result = namespaceQueryService.searchNamespaceList(searchKey, searchValue, pageable);
+        
+        // Add VC schema counts to each namespace
+        List<NamespaceDto> namespaceDtosWithCount = result.getContent().stream()
+                .map(dto -> {
+                    int vcSchemaCount = namespaceQueryService.countVcSchemasByNamespaceId(dto.getId());
+                    return NamespaceDto.builder()
+                            .id(dto.getId())
+                            .namespaceId(dto.getNamespaceId())
+                            .name(dto.getName())
+                            .ref(dto.getRef())
+                            .schemaClaims(dto.getSchemaClaims())
+                            .createdAt(dto.getCreatedAt())
+                            .updatedAt(dto.getUpdatedAt())
+                            .vcSchemaCount(vcSchemaCount)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(namespaceDtosWithCount, pageable, result.getTotalElements());
+    }
+
+    /**
      * Updates an existing namespace with new schema claims data.
+     * Checks if the namespace is in use by VC schemas before allowing update.
      *
      * @param request the update request DTO containing schema claims
      * @return the updated namespace DTO
      */
     public NamespaceDto updateNamespace(UpdateNamespaceReqDto request) {
-        if (namespaceQueryService.existsByNamespaceId(request.getId())) {
+        // Check if namespace is in use by VC schemas
+        int vcSchemaCount = namespaceQueryService.countVcSchemasByNamespaceId(request.getId());
+        if (vcSchemaCount > 0) {
             throw new OpenDidException(ErrorCode.NAMESPACE_UPDATE_CONFLICT);
         }
 
@@ -92,15 +129,22 @@ public class NamespaceService {
         namespace.setSchemaClaims(request.getSchemaClaims());
 
         namespaceQueryService.save(namespace);
-        return NamespaceDto.fromEntity(namespace);
+        return NamespaceDto.fromEntityWithCount(namespace, vcSchemaCount);
     }
 
     /**
      * Deletes a namespace by its ID.
+     * Checks if the namespace is in use by VC schemas before allowing deletion.
      *
      * @param id the ID of the namespace to delete
      */
     public void deleteNamespaceById(Long id) {
+        // Check if namespace is in use by VC schemas
+        int vcSchemaCount = namespaceQueryService.countVcSchemasByNamespaceId(id);
+        if (vcSchemaCount > 0) {
+            throw new OpenDidException(ErrorCode.NAMESPACE_DELETE_CONFLICT);
+        }
+        
         namespaceQueryService.deleteById(id);
     }
 
@@ -108,21 +152,11 @@ public class NamespaceService {
      * Retrieves a namespace by its ID.
      *
      * @param id the ID of the namespace
-     * @return the namespace DTO
+     * @return the namespace DTO with VC schema count
      */
     public NamespaceDto getNamespaceById(Long id) {
-        return NamespaceDto.fromEntity(namespaceQueryService.findById(id));
-    }
-
-    /**
-     * Searches namespaces by key and value with pagination support.
-     *
-     * @param searchKey   the field to filter on
-     * @param searchValue the value to match
-     * @param pageable    pagination information
-     * @return page of matching namespace DTOs
-     */
-    public PageImpl<NamespaceDto> searchNamespaceList(String searchKey, String searchValue, Pageable pageable) {
-        return namespaceQueryService.searchNamespaceList(searchKey, searchValue, pageable);
+        Namespace namespace = namespaceQueryService.findById(id);
+        int vcSchemaCount = namespaceQueryService.countVcSchemasByNamespaceId(id);
+        return NamespaceDto.fromEntityWithCount(namespace, vcSchemaCount);
     }
 }

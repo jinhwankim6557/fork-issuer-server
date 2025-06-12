@@ -120,4 +120,14 @@ public class NamespaceQueryService {
     public boolean existsByNamespaceId(Long id) {
         return vcSchemaNamespaceRepository.existsByNamespaceId(id);
     }
+
+    /**
+     * Counts the number of VC schemas associated with a specific namespace.
+     *
+     * @param namespaceId the ID of the namespace
+     * @return the count of VC schemas using this namespace
+     */
+    public int countVcSchemasByNamespaceId(Long namespaceId) {
+        return (int) vcSchemaNamespaceRepository.countByNamespaceId(namespaceId);
+    }
 }
