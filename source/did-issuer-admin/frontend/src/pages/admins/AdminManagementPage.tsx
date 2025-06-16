@@ -122,7 +122,7 @@ const AdminManagementPage = (props: Props) => {
         fetchAdminList(paginationModel.page, paginationModel.pageSize, null, null)
           .then((response) => {
             setRows(response.data.content);
-            setTotalRows(response.data.totalElements);
+            setTotalRows(response.data.total);
           })
           .catch((err) => {
             console.error("Failed to retrieve Admin List. ", err);

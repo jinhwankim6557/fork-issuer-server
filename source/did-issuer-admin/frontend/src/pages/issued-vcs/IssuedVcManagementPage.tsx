@@ -71,7 +71,7 @@ const IssuedVcManagementPage = (props: Props) => {
       fetchIssuedVc(paginationModel.page, paginationModel.pageSize, null, null)
         .then((response) => {
           setRows(response.data.content);
-          setTotalRows(response.data.totalElements);
+          setTotalRows(response.data.total);
         });
   
     } catch (error) {
@@ -93,7 +93,7 @@ const IssuedVcManagementPage = (props: Props) => {
     fetchIssuedVc(paginationModel.page, paginationModel.pageSize, null, null)
       .then((response) => {
         setRows(response.data.content);
-        setTotalRows(response.data.totalElements);
+        setTotalRows(response.data.total);
       })
       .catch((error) => {
         console.error("Failed to retrieve User Infos. ", error);
