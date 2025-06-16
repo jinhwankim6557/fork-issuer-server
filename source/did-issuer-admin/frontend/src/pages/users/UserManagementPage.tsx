@@ -107,12 +107,12 @@ const UserManagementPage = (props: Props) => {
           ]}
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
-          onEdit={() => {
-            if (selectedRowData) {
-              navigate(`/users/user-management/user-edit/${selectedRowData.id}`);
-            }
-          }}
-          onRegister={() => navigate('/users/user-management/user-registration')}
+          // onEdit={() => {
+          //   if (selectedRowData) {
+          //     navigate(`/users/user-management/user-edit/${selectedRowData.id}`);
+          //   }
+          // }}
+          // onRegister={() => navigate('/users/user-management/user-registration')}
           additionalButtons={[
 
           ]}

@@ -105,7 +105,7 @@ const UserDetailPage = (props: Props) => {
 
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
             <Button variant="outlined" color="secondary" onClick={() => navigate(-1)}>Back</Button>
-            <Button variant="outlined" color="secondary" onClick={() => navigate(`/users/user-management/user-edit/${numerirUserId}`)}>Go to Edit</Button>
+            {/* <Button variant="outlined" color="secondary" onClick={() => navigate(`/users/user-management/user-edit/${numerirUserId}`)}>Go to Edit</Button> */}
           </Box>
         </StyledInputArea>
       </StyledContainer>
