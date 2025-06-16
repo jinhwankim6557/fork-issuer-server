@@ -152,7 +152,7 @@ const CredentialDefinitionRegistrationPage = () => {
     return isValid;
   };
 
-  
+
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -193,24 +193,24 @@ const CredentialDefinitionRegistrationPage = () => {
     }
 
     verifyCredentialDefinitionAliasUnique(formData.alias)
-    .then((response) => {
+      .then((response) => {
         if (response.data.isUnique === false) {
-            setErrors((prev) => ({ ...prev, alias: 'Alias already exists.' }));
-            setIsAliasValid(false);
-            setAliasCheckMessage('This alias is already in use. Please choose a different one.');
-            setAliasCheckStatus('error');
-        } else {        
-            setIsAliasValid(true);
-            setErrors((prev) => ({ ...prev, alias: undefined }));
-            setAliasCheckMessage('This alias is available for use.');
-            setAliasCheckStatus('success');
+          setErrors((prev) => ({ ...prev, alias: 'Alias already exists.' }));
+          setIsAliasValid(false);
+          setAliasCheckMessage('This alias is already in use. Please choose a different one.');
+          setAliasCheckStatus('error');
+        } else {
+          setIsAliasValid(true);
+          setErrors((prev) => ({ ...prev, alias: undefined }));
+          setAliasCheckMessage('This alias is available for use.');
+          setAliasCheckStatus('success');
         }
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         setIsAliasValid(false);
         setAliasCheckMessage('Failed to check alias availability. Please try again.');
         setAliasCheckStatus('error');
-    });
+      });
   };
 
   useEffect(() => {
@@ -278,7 +278,7 @@ const CredentialDefinitionRegistrationPage = () => {
             </Select>
             {errors.schemaName && <FormHelperText>{errors.schemaName}</FormHelperText>}
           </FormControl>
-        
+
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <TextField
@@ -287,38 +287,49 @@ const CredentialDefinitionRegistrationPage = () => {
               size="small"
               margin="normal"
               value={formData.alias}
-              onChange={handleChange("alias")}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value;
+                if (!/\s/.test(value)) {
+                  handleChange("alias")(e);
+                }
+              }}
               error={!!errors.alias}
               helperText={errors.alias || aliasCheckMessage}
               sx={{
                 '& .MuiFormHelperText-root': {
-                  color: aliasCheckStatus === 'success' ? 'green' : 
-                         aliasCheckStatus === 'error' ? 'red' : 'inherit',
+                  color: aliasCheckStatus === 'success' ? 'green' :
+                    aliasCheckStatus === 'error' ? 'red' : 'inherit',
                   fontWeight: aliasCheckStatus ? 500 : 'inherit'
                 }
               }}
             />
-            <Button 
-                variant="contained" 
-                onClick={handleCheckDuplicateDefinitionAlias}
-                disabled={!formData.alias}
-                sx={{ 
-                    minWidth: 150,  
-                    whiteSpace: 'nowrap', 
-                    textTransform: 'none' 
-                }}
+
+            <Button
+              variant="contained"
+              onClick={handleCheckDuplicateDefinitionAlias}
+              disabled={!formData.alias}
+              sx={{
+                minWidth: 150,
+                whiteSpace: 'nowrap',
+                textTransform: 'none'
+              }}
             >
-                Check Availability
+              Check Availability
             </Button>
           </Box>
-        
+
           <TextField
             label="Definition Version *"
             fullWidth
             size="small"
             margin="normal"
             value={formData.version}
-            onChange={handleChange("version")}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              if (!/\s/.test(value)) {
+                handleChange("version")(e);
+              }
+            }}
             error={!!errors.version}
             helperText={errors.version}
           />
@@ -343,7 +354,12 @@ const CredentialDefinitionRegistrationPage = () => {
             size="small"
             margin="normal"
             value={formData.tag}
-            onChange={handleChange("tag")}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              if (!/\s/.test(value)) {
+                handleChange("tag")(e);
+              }
+            }}
             error={!!errors.tag}
             helperText={errors.tag}
           />

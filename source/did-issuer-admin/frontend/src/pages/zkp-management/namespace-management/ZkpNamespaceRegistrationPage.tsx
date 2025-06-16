@@ -294,10 +294,16 @@ const ZkpNamespaceRegistrationPage = () => {
               margin="normal"
               sx={{ width: '60%' }}
               value={formData.namespaceId}
-              onChange={handleChange("namespaceId")}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value;
+                if (!/\s/.test(value)) {
+                  handleChange("namespaceId")(e);
+                }
+              }}
               error={!!errors.namespaceId}
               helperText={errors.namespaceId}
             />
+
             <Button 
                 variant="contained" 
                 onClick={handleCheckDuplicateNamespaceId}
@@ -368,7 +374,12 @@ const ZkpNamespaceRegistrationPage = () => {
                         fullWidth
                         size="small"
                         value={item.label}
-                        onChange={handleItemTextChange(index, "label")}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          const value = e.target.value;
+                          if (!/\s/.test(value)) {
+                            handleItemTextChange(index, "label")(e);
+                          }
+                        }}
                         error={!!errors.items?.[index]?.label}
                         helperText={errors.items?.[index]?.label}
                       />
