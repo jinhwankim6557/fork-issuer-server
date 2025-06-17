@@ -28,8 +28,8 @@ import java.nio.charset.StandardCharsets;
  * <p>
  * Provides operations to create, update, search, and retrieve users associated with Verifiable Credential schemas.
  */
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class UserManagementService {
 
@@ -70,13 +70,17 @@ public class UserManagementService {
     }
 
     public void createUserInfo(CreateUserInfoFromDemoReqDto request) {
+        if (request.getDid() == null && request.getPii() == null) {
+            throw new OpenDidException(ErrorCode.HOLDER_INVALID);
+        }
+
         String vcSchemaInput = request.getVcSchemaId();
         String vcSchemaName = extractNameOrUseAsIs(vcSchemaInput);
 
         Long vcSchemaId = vcSchemaQueryService.findByVcSchemaId(vcSchemaName).getId();
         User existedUser;
 
-        if (request.getDid() != null) {
+        if (request.getDid() != null && !request.getDid().isEmpty()) {
             existedUser = userQueryService.findByDidAndVcSchemaIdOrNew(request.getDid(), vcSchemaId);
         } else {
             existedUser = userQueryService.findByPiiAndVcSchemaIdOrNew(request.getPii(), vcSchemaId);
@@ -133,3 +137,4 @@ public class UserManagementService {
         user.setData(request.getUserInfo());
     }
 }
+
