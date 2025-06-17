@@ -346,7 +346,12 @@ const NamespaceEditPage = (props: Props) => {
                                                 fullWidth
                                                 size="small"
                                                 value={item.id}
-                                                onChange={handleTextChange(index, "id")}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                    const value = e.target.value;
+                                                    if (!/\s/.test(value)) {
+                                                        handleTextChange(index, "id")(e);
+                                                    }
+                                                    }}
                                                 error={!!errors.items?.[index]?.id}
                                                 helperText={errors.items?.[index]?.id}
                                                 sx={{ width: 150 }}
