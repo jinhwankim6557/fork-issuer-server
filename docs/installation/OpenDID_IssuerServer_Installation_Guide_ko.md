@@ -24,6 +24,8 @@ Open DID Issuer Server Installation Guide
 목차
 ==
 
+- [Open DID Issuer Server Installation Guide](#open-did-issuer-server-installation-guide)
+- [목차](#목차)
 - [1. 소개](#1-소개)
   - [1.1. 개요](#11-개요)
   - [1.2. Issuer 서버 정의](#12-issuer-서버-정의)
@@ -38,7 +40,17 @@ Open DID Issuer Server Installation Guide
 - [4. 서버 구동 방법](#4-서버-구동-방법)
   - [4.1. IDE로 구동하기 (Gradle 및 React 프로젝트 실행)](#41-ide로-구동하기-gradle-및-react-프로젝트-실행)
     - [4.1.1. IntelliJ IDEA에서 백엔드(Spring Boot) 실행](#411-intellij-idea에서-백엔드spring-boot-실행)
+      - [1. IntelliJ IDEA 설치](#1-intellij-idea-설치)
+      - [2. 프로젝트 열기](#2-프로젝트-열기)
+      - [3. Gradle 빌드](#3-gradle-빌드)
+      - [4. 서버 실행](#4-서버-실행)
+      - [5. 데이터베이스 설치](#5-데이터베이스-설치)
+      - [6. 서버 설정](#6-서버-설정)
     - [4.1.2. VS Code에서 프론트엔드(React) 실행](#412-vs-code에서-프론트엔드react-실행)
+      - [1. VS Code 설치](#1-vs-code-설치)
+      - [2. 프로젝트 열기](#2-프로젝트-열기-1)
+      - [3. 의존성 설치](#3-의존성-설치)
+      - [4. 개발 서버 실행](#4-개발-서버-실행)
   - [4.2. 콘솔 명령어로 구동하기](#42-콘솔-명령어로-구동하기)
     - [4.2.1. Gradle 빌드 명령어](#421-gradle-빌드-명령어)
     - [4.2.2. 서버 구동 방법](#422-서버-구동-방법)
@@ -61,6 +73,8 @@ Open DID Issuer Server Installation Guide
   - [5.5.1. Blockchain 설정](#551-blockchain-설정)
   - [5.6. blockchain.properties](#56-blockchainproperties)
     - [5.6.1. 블록체인 연동 설정](#561-블록체인-연동-설정)
+      - [EVM Network Configuration](#evm-network-configuration)
+      - [EVM Contract Configuration](#evm-contract-configuration)
 - [6. 프로파일 설정 및 사용](#6-프로파일-설정-및-사용)
   - [6.1. 프로파일 개요 (`sample`, `dev`)](#61-프로파일-개요-sample-dev)
     - [6.1.1. `sample` 프로파일](#611-sample-프로파일)
@@ -196,13 +210,13 @@ did-issuer-server
     └── did-issuer-server
         ├── gradle
         ├── libs
-            └── did-sdk-common-1.0.0.jar
+            └── did-sdk-common-2.0.0.jar
             └── did-blockchain-sdk-server-2.0.0.jar
-            └── did-core-sdk-server-1.0.0..jar
-            └── did-crypto-sdk-server-1.0.0.jar
-            └── did-datamodel-server-1.0.0.jar
-            └── did-wallet-sdk-server-1.0.0.jar
-            └── did-zkp-sdk-server-1.0.0.jar
+            └── did-core-sdk-server-2.0.0.jar
+            └── did-crypto-sdk-server-2.0.0.jar
+            └── did-datamodel-server-2.0.0.jar
+            └── did-wallet-sdk-server-2.0.0.jar
+            └── did-zkp-sdk-server-2.0.0.jar
         ├── sample
         └── src
         └── build.gradle

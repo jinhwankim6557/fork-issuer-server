@@ -24,6 +24,8 @@ Open DID Issuer Server Installation Guide
 Table of Contents
 ==
 
+- [Open DID Issuer Server Installation Guide](#open-did-issuer-server-installation-guide)
+- [Table of Contents](#table-of-contents)
 - [1. Introduction](#1-introduction)
   - [1.1. Overview](#11-overview)
   - [1.2. Issuer Server Definition](#12-issuer-server-definition)
@@ -38,7 +40,17 @@ Table of Contents
 - [4. Server Operation Methods](#4-server-operation-methods)
   - [4.1. Running with IDE (Gradle and React Project Execution)](#41-running-with-ide-gradle-and-react-project-execution)
     - [4.1.1. Running Backend (Spring Boot) in IntelliJ IDEA](#411-running-backend-spring-boot-in-intellij-idea)
+      - [1. Install IntelliJ IDEA](#1-install-intellij-idea)
+      - [2. Open Project](#2-open-project)
+      - [3. Gradle Build](#3-gradle-build)
+      - [4. Run Server](#4-run-server)
+      - [5. Database Installation](#5-database-installation)
+      - [6. Server Configuration](#6-server-configuration)
     - [4.1.2. Running Frontend (React) in VS Code](#412-running-frontend-react-in-vs-code)
+      - [1. Install VS Code](#1-install-vs-code)
+      - [2. Open Project](#2-open-project-1)
+      - [3. Install Dependencies](#3-install-dependencies)
+      - [4. Run Development Server](#4-run-development-server)
   - [4.2. Running with Console Commands](#42-running-with-console-commands)
     - [4.2.1. Gradle Build Commands](#421-gradle-build-commands)
     - [4.2.2. Server Operation Method](#422-server-operation-method)
@@ -61,6 +73,8 @@ Table of Contents
   - [5.5.1. Blockchain Configuration](#551-blockchain-configuration)
   - [5.6. blockchain.properties](#56-blockchainproperties)
     - [5.6.1. Blockchain Integration Configuration](#561-blockchain-integration-configuration)
+      - [EVM Network Configuration](#evm-network-configuration)
+      - [EVM Contract Configuration](#evm-contract-configuration)
 - [6. Profile Configuration and Usage](#6-profile-configuration-and-usage)
   - [6.1. Profile Overview (`sample`, `dev`)](#61-profile-overview-sample-dev)
     - [6.1.1. `sample` Profile](#611-sample-profile)
@@ -195,13 +209,13 @@ did-issuer-server
    └── did-issuer-server
        ├── gradle
        ├── libs
-           └── did-sdk-common-1.0.0.jar
+           └── did-sdk-common-2.0.0.jar
            └── did-blockchain-sdk-server-2.0.0.jar
-           └── did-core-sdk-server-1.0.0..jar
-           └── did-crypto-sdk-server-1.0.0.jar
-           └── did-datamodel-server-1.0.0.jar
-           └── did-wallet-sdk-server-1.0.0.jar
-           └── did-zkp-sdk-server-1.0.0.jar
+           └── did-core-sdk-server-2.0.0.jar
+           └── did-crypto-sdk-server-2.0.0.jar
+           └── did-datamodel-server-2.0.0.jar
+           └── did-wallet-sdk-server-2.0.0.jar
+           └── did-zkp-sdk-server-2.0.0.jar
        ├── sample
        └── src
        └── build.gradle
