@@ -32,6 +32,9 @@ Revision History
 Table of Contents
 ==
 
+- [OpenDID IssuerAdmin Operation Guide](#opendid-issueradmin-operation-guide)
+- [Revision History](#revision-history)
+- [Table of Contents](#table-of-contents)
 - [1. Introduction](#1-introduction)
   - [1.1. Overview](#11-overview)
   - [1.2. Admin Console Definition](#12-admin-console-definition)
@@ -42,7 +45,6 @@ Table of Contents
     - [2.3.1. Issuer Unregistered State](#231-issuer-unregistered-state)
     - [2.3.3. Issuer Registered State](#233-issuer-registered-state)
   - [2.4. Password Change Management](#24-password-change-management)
-- [3. Function-specific Detailed Manual](#3-function-specific-detailed-manual)
   - [3.1. Issuer Registration](#31-issuer-registration)
     - [▸ Step 1 – Enter Issuer Info](#-step-1--enter-issuer-info)
     - [▸ Step 2 – Register DID Document](#-step-2--register-did-document)
@@ -60,35 +62,37 @@ Table of Contents
     - [▸ VC Schema List](#-vc-schema-list)
     - [▸ VC Schema Registration](#-vc-schema-registration)
     - [▸ VC Schema Detailed Information](#-vc-schema-detailed-information)
-    - [▸ VC Schema Update](#-vc-schema-update)
   - [3.3.3. Issue Profile Management](#333-issue-profile-management)
+    - [Usage Flow](#usage-flow)
     - [▸ Issue Profile List](#-issue-profile-list)
     - [▸ Issue Profile Registration](#-issue-profile-registration)
     - [▸ Issue Profile Detailed Information](#-issue-profile-detailed-information)
     - [▸ Issue Profile Update](#-issue-profile-update)
   - [3.4. ZKP Management](#34-zkp-management)
+    - [▸ ZKP VC Issuance Flow Summary](#-zkp-vc-issuance-flow-summary)
   - [3.4.1. ZKP Namespace Management](#341-zkp-namespace-management)
     - [▸ Namespace List](#-namespace-list-1)
     - [▸ Namespace Registration](#-namespace-registration-1)
     - [▸ Namespace Detailed Information](#-namespace-detailed-information-1)
     - [▸ Namespace Update](#-namespace-update-1)
   - [3.4.2. Credential Schema Management](#342-credential-schema-management)
+    - [Differences Between Standard VC Schema and ZKP Credential Schema](#differences-between-standard-vc-schema-and-zkp-credential-schema)
     - [▸ Credential Schema List](#-credential-schema-list)
     - [▸ Credential Schema Registration](#-credential-schema-registration)
     - [▸ Credential Schema Detailed Information](#-credential-schema-detailed-information)
   - [3.4.3. Credential Definition Management](#343-credential-definition-management)
+    - [ZKP Credential Generation and Delivery at Issuance](#zkp-credential-generation-and-delivery-at-issuance)
+    - [Components of a Credential Definition](#components-of-a-credential-definition)
     - [▸ Credential Definition List](#-credential-definition-list)
     - [▸ Credential Definition Registration](#-credential-definition-registration)
     - [▸ Credential Definition Detailed Information](#-credential-definition-detailed-information)
   - [3.5. User Management](#35-user-management)
     - [▸ User List](#-user-list)
-    - [▸ User Registration (Register)](#-user-registration-register)
     - [▸ User Detailed Information](#-user-detailed-information)
-    - [▸ User Information Update](#-user-information-update)
   - [3.6. Issued VC Management](#36-issued-vc-management)
-    - [▸ VC List](#-vc-list)
-    - [▸ VC Status Change](#-vc-status-change)
-    - [▸ VC Detailed Information](#-vc-detailed-information)
+    - [▸ Issued VC List](#-issued-vc-list)
+    - [▸ Issued VC Status Change](#-issued-vc-status-change)
+    - [▸ Issued VC Detailed Information](#-issued-vc-detailed-information)
   - [3.7. Admin Management](#37-admin-management)
     - [3.7.1 Admin List Inquiry](#371-admin-list-inquiry)
     - [3.7.2. Admin Registration](#372-admin-registration)
@@ -113,14 +117,18 @@ The Issuer serves as the issuing entity for Verifiable Credentials (VCs), provid
 The main items that can be configured in the Issuer Admin Console are as follows:
 
 - **Issuer Basic Information Management**
- - Issuer server registration and status verification
-- **VC Issuance Item Management**
- - Namespace registration and item configuration
- - VC Schema registration and management
- - Issuance policy (Profile) configuration
+  - Issuer server registration and status verification
+- **VC Management**
+  - Namespace registration and item configuration
+  - VC Schema registration and management
+  - Issuance policy (Profile) configuration
+- **ZKP Management**
+  - ZKP Namespace registration and item configuration
+  - Credential Schema registration and management
+  - Credential Definition registration and management
 - **User and VC History Management**
- - Management of users eligible for issuance
- - Verification and status tracking of issued VC lists
+  - Management of users eligible for issuance
+  - Verification and status tracking of issued VC lists
 
 # 2. Basic Manual
 
@@ -222,9 +230,31 @@ User password changes can be performed through the following steps:
 
 <br/>
 
-# 3. Function-specific Detailed Manual
+> **Important Notice**
+> The main functions of the Issuer Admin Console—including all VC issuance-related configurations—can only be used **after completing Issuer Registration**.
+> The VC management menus within the system are enabled only after the Issuer is registered, and VC issuance configurations become available at that point.
 
-This chapter provides detailed usage instructions for the main functions of the Issuer Admin Console.
+To actually issue VCs, the following preparatory steps must be completed first:
+
+* **Basic Setup for Standard VC Issuance**
+
+  1. **Register Namespace** – Define the claim fields to be included in the VC
+  2. **Register VC Schema** – Define the VC data structure based on the Namespace
+  3. **Register Issue Profile** – Configure the issuance method and policy
+
+* **Additional Setup for ZKP-based VC Issuance**
+
+  1. **Register ZKP Namespace** – Define ZKP-specific claim structure
+  2. **Register Credential Schema** – Define VC schema optimized for ZKP
+  3. **Register Credential Definition** – Define a credential structure linked to the ZKP network
+  4. **Include ZKP Settings in Issue Profile** – Enable ZKP issuance by linking the relevant Definition ID
+
+Only after completing the above steps can users be registered and VCs be issued.
+Attempting to proceed out of order may result in issuance failure or disabled UI elements.
+
+> **Note**
+> All VC-related configurations must be performed **after Issuer Registration**.
+> The system dynamically enables UI elements or displays error messages based on whether prerequisite items exist.
 
 ## 3.1. Issuer Registration
 
@@ -256,28 +286,28 @@ This is the step to create the Issuer's DID Document and receive registration re
 <br/>
 
 **1. Generate DID Document**  
-<img src="./images/3-1-1.issuer-registration-step2-1.png" width="700"/>  
+<img src="./images/3-1-1.issuer-registration-step2-1.png" width="500"/>  
 Clicking the `GENERATE` button automatically creates a DID document and displays it in JSON format on the screen.  
 > Completion message: ✅ DID Document has been successfully created.
 
 <br/>
 
 **2. Submit Registration Request**  
-<img src="./images/3-1-1.issuer-registration-step2-2.png" width="700"/>  
+<img src="./images/3-1-1.issuer-registration-step2-2.png" width="500"/>  
 Clicking the `REQUEST` button sends a DID document registration request to TAS.  
 > Request completion message: ✅ Registration request has been submitted.
 
 <br/>
 
 **3. Check Approval Status**  
-<img src="./images/3-1-1.issuer-registration-step2-3.png" width="700"/>  
+<img src="./images/3-1-1.issuer-registration-step2-3.png" width="500"/>  
 Click the `CHECK` button to verify approval from the TAS administrator.  
 > Approval completion message: ✅ Approval confirmed. You can proceed.
 
 <br/>
 
 **4. Screen after completing all processes**  
-<img src="./images/3-1-1.issuer-registration-step2-4.png" width="700"/>
+<img src="./images/3-1-1.issuer-registration-step2-4.png" width="500"/>
 
 <br/>
 
@@ -317,7 +347,7 @@ Once the Issuer is registered, it is displayed as active status (`ACTIVATE`) in 
 
 The Issuer Management screen consists of the following items.
 
-<img src="./images/3-2-1.issuer-management-info.png" width="700"/>
+<img src="./images/3-2-1.issuer-management-info.png" width="350"/>
 
 | Item              | Description                                                           |
 |-------------------|----------------------------------------------------------------|
@@ -345,7 +375,20 @@ VC Management consists of the following three sub-menus.
 
 ## 3.3.1. Namespace Management
 
-Namespace Management is a menu for registering and managing namespaces used when defining VC structures. Namespaces are referenced when configuring VC Schemas and Issue Profiles.
+Namespace Management is the menu used to register and manage namespaces, which are used to define the structure of a VC.
+A namespace is a **logical grouping of claim (attribute) items to be included in a single VC**, and each item includes information such as `ID`, `Type`, `Format`, and `Caption`.
+
+Once registered, a namespace is selected as part of the configuration when creating a VC Schema, serving as the **foundation for constructing the data structure of the VC**. It is also indirectly referenced when creating an Issue Profile,
+making it a **core element that defines the input fields required during VC issuance**.
+
+In summary, a namespace is used in the overall VC issuance system as follows:
+
+1. **Register Namespace** – Define the items to be included in the VC
+2. **Select Namespace when creating VC Schema** – Define VC structure
+3. **Reference VC Schema when registering Issue Profile**
+4. **Use as the basis for entering VC data (JSON) during user registration**
+
+> This menu is **available after Issuer registration**. Since it is referenced during VC Schema and Issue Profile registration, it is a **required item to be configured first**.
 
 ### ▸ Namespace List
 
@@ -353,19 +396,24 @@ In the Namespace list screen, you can verify registered namespaces.
 
 <img src="./images/3-3-1.namespace-management.png" width="700"/>
 
-| Item             | Description                             |
-|------------------|----------------------------------|
-| **ID**           | Unique identifier of the namespace.  |
-| **Name**         | Namespace name. Clicking moves to the detailed screen. |
-| **Registered At**| Date and time when the namespace was registered. |
+| Item                | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| **ID**              | Unique identifier of the namespace.                          |
+| **Name**            | Name of the namespace. Click to navigate to the detail view. |
+| **VC Schema Count** | Number of VC Schemas referencing this namespace.             |
+| **Registered At**   | Date and time when the namespace was registered.             |
 
-- Clicking the `REGISTER` button allows you to register a new namespace.
+* Click the `REGISTER` button to create a new namespace.
+* After selecting a namespace, click the `UPDATE` button to modify it.
+
+  > You can modify the namespace only if no VC Schema is using it.
+  > If it is referenced by a VC Schema, modification is not allowed.
 
 ### ▸ Namespace Registration
 
 In the namespace registration screen, you create a namespace by entering the following information.
 
-<img src="./images/3-3-1.namespace-registration.png" width="700"/>
+<img src="./images/3-3-1.namespace-registration.png" width="500"/>
 
 | Item            | Description                                              |
 |-----------------|---------------------------------------------------|
@@ -381,7 +429,7 @@ In the namespace registration screen, you create a namespace by entering the fol
 
 Clicking the name in the namespace list allows you to verify detailed information.
 
-<img src="./images/3-3-1.namespace-detail.png" width="700"/>
+<img src="./images/3-3-1.namespace-detail.png" width="500"/>
 
 | Item            | Description                             |
 |-----------------|----------------------------------|
@@ -390,13 +438,12 @@ Clicking the name in the namespace list allows you to verify detailed informatio
 | **Ref**         | Reference URL or description.        |
 | **Items**       | List of registered items. Each item consists of ID, Type, Format, Caption.|
 
-- You can move to the edit screen by clicking the `GO TO EDIT` button.
 
 ### ▸ Namespace Update
 
 This is a screen where you can modify existing namespace information.
 
-<img src="./images/3-3-1.namespace-update.png" width="700"/>
+<img src="./images/3-3-1.namespace-update.png" width="500"/>
 
 | Item             | Description                                   |
 |------------------|----------------------------------------|
@@ -412,7 +459,24 @@ This is a screen where you can modify existing namespace information.
 
 ## 3.3.2. VC Schema Management
 
-VC Schema Management is a menu for registering and managing VC Schemas required for VC issuance. VC Schemas define the data structure of VCs and are referenced in issuance profiles (Issue Profiles).
+VC Schema Management is the menu for registering and managing **VC Schemas** that define the data structure of Verifiable Credentials (VC).
+
+A VC Schema is a schema document that defines the **structure and format of the data fields (Claims)** to be included in a VC.
+It is created by **combining claim items defined in pre-registered Namespaces**.
+In other words, a VC Schema is based on a Namespace and **clearly specifies what information will be included in the VC**.
+
+Once registered, the VC Schema is **referenced during Issue Profile creation**,
+and when entering user information for issuance, the VC JSON structure is determined based on this Schema.
+Thus, the VC Schema **serves as the core reference point for VC issuance** and is used in the following flow:
+
+1. **Register Namespace** – Define claim items
+2. **Register VC Schema** – Define VC structure based on Namespace
+3. **Select VC Schema when registering Issue Profile**
+4. **Enter JSON data based on Schema during user registration**
+5. **Generate actual VC using the Schema at issuance time**
+
+> This menu is **available only after Issuer registration and prior Namespace registration**.
+> As a central component in defining the issuance structure, **accurate claim configuration and schema design are critical**.
 
 ### ▸ VC Schema List
 
@@ -463,34 +527,43 @@ Clicking the title in the VC Schema list allows you to verify detailed informati
 | **Description**      | Detailed description of the schema.                          |
 | **Credential Subject** | List of Namespaces included in the VC Schema. Clicking an item allows you to verify detailed information of that Namespace. |
 
-- Clicking the `GO TO EDIT` button in the detailed information screen moves to the edit screen.
-
----
-
-### ▸ VC Schema Update
-
-You can modify the content of registered VC Schemas.
-
-<img src="./images/3-3-2.vc-schema-update.png" width="700"/>
-
-| Item              | Description                                                     |
-|-------------------|----------------------------------------------------------|
-| **VC Schema ID**  | Cannot be modified as it is a unique identifier.                    |
-| **Title**         | You can modify the title of the VC Schema.                    |
-| **Language**      | You can change the language of the schema description.                  |
-| **Version**       | You can change the version of the schema.                       |
-| **Description**   | You can modify the detailed description of the schema.                  |
-| **Items**         | You can add or delete Namespace items linked to the Schema.<br> - Add items with the `ADD ITEM` button and delete with the trash icon. |
-
-- After modifying changes, click the `UPDATE` button to save.
-- The `RESET` button returns the form to its initial state, and you can move to the detailed view screen with the `BACK` button.
-
 ---
 
 ## 3.3.3. Issue Profile Management
 
-Issue Profile Management is a menu for defining and managing profiles (Issue Profiles) to be used for VC issuance.  
-Issue Profiles configure VC Schema and issuance policy information into a single issuance plan, which is referenced during actual VC issuance.
+Issue Profile Management is the menu for defining and managing **Issue Profiles** used for issuing Verifiable Credentials (VCs).
+
+An Issue Profile is a **VC issuance policy** that bundles together the VC Schema, issuance method (e.g., User/Issuer Initiate), security settings, and other parameters into a single unit.
+
+To issue a VC, an Issue Profile based on the relevant VC Schema must be registered.
+During issuance, the system references this profile to automatically configure the issuance process, structure, and security settings.
+
+An Issue Profile consists of the following elements:
+
+* VC Schema ID to reference
+* VC issuance method (`User Initiate`, `Issuer Initiate`)
+* List of endpoint addresses used during issuance
+* End-to-End (E2E) encryption settings
+* (Optional) ZKP issuance option and Credential Definition ID
+
+> **To issue ZKP Credential**, a ZKP Credential Definition must be registered in advance.
+> The Definition ID must be linked during Issue Profile creation to enable ZKP Credential issuance.
+
+---
+
+### Usage Flow
+
+1. **Register Namespace** → Define claim items
+2. **Register VC Schema** → Define structure
+3. **Register Credential Definition** (for ZKP issuance)
+4. **Register Issue Profile** → Define issuance policy
+5. **Register user and issue VC**
+
+> Multiple Issue Profiles can be defined for a single VC Schema,
+> allowing different issuance methods and security settings depending on the intended use case (e.g., for general users vs administrators).
+
+> This menu is available **after completing Issuer registration, Namespace registration, and VC Schema registration**.
+> To issue ZKP-based VCs, **Credential Definition registration must also be completed beforehand**.
 
 ### ▸ Issue Profile List
 
@@ -584,21 +657,60 @@ You can verify the list of registered Issue Profiles.
 
 ## 3.4. ZKP Management
 
-The ZKP Management menu provides registration and management functions for **Namespace**, **Credential Schema**, and **Credential Definition** for Zero-Knowledge Proof-based Credential issuance.
+The ZKP Management menu provides functionality to register and manage components required for issuing **Zero-Knowledge Proof (ZKP)**-based Credentials.
+ZKP allows **proof of specific information without directly disclosing the user's sensitive data**, enabling **more privacy-preserving VC issuance**.
 
-To configure ZKP-based issuance flow, the following three steps must be performed sequentially:
+To configure ZKP-based issuance, the following three registration steps must be completed in advance.
+The data generated through these steps is referenced later during **Issue Profile registration** under the ZKP issuance section:
 
-1. **ZKP Namespace Registration** – Define the list of Claims to be used  
-2. **Credential Schema Registration** – Define issuance schema based on Namespace  
-3. **Credential Definition Registration** – Configure definition for actual issuance
+1. **Register ZKP Namespace** – Define claims (attributes) to be included in the VC
+2. **Register Credential Schema** – Define the ZKP VC structure based on the namespace
+3. **Register Credential Definition** – Create a definition based on the schema for actual issuance
+   → This definition generates a unique Definition ID to be used in the ZKP network
 
-ZKP-related functions are provided as a separate top-level menu from [3.3. VC Management].
+ZKP Management supports these steps in order and is structured separately from general VC Schema management.
 
 ---
 
+### ▸ ZKP VC Issuance Flow Summary
+
+1. **Register ZKP Namespace**
+2. → **Register ZKP Credential Schema (based on Namespace)**
+3. → **Register ZKP Credential Definition (based on Schema)**
+4. → **Enable ZKP issuance option and link Definition ID when creating an Issue Profile**
+5. → **Register user and issue ZKP-based VC**
+
+> To issue a ZKP-based VC, the `Initiate Type` of the Issue Profile must be set to `Issuer Initiate`,
+> and the `ZKP Issuance` option must be enabled with a selected Definition ID.
+
+> All ZKP Management menus are available **only after completing Issuer registration**,
+> and failing to follow the registration order may cause errors in Issue Profile configuration or VC issuance.
+
 ## 3.4.1. ZKP Namespace Management
 
-This is a space for defining sets of Claims to be used for ZKP issuance, including label, type, and caption information for each Claim.
+ZKP Namespace Management is the space for defining claim (attribute) items to be included in **Zero-Knowledge Proof (ZKP)**-based VCs.
+Namespaces registered here serve as the foundational unit for ZKP Credential Schemas and clearly specify the **verifiable data items** that will be included in a ZKP VC.
+
+A namespace consists of **one or more claim items** (such as Label, Type, Caption),
+and each claim corresponds to the actual user information at the time of issuance and becomes the subject of **ZKP-based proof**.
+
+---
+
+ZKP Namespaces are later **referenced as claim lists during Credential Schema registration**,
+and through the schema and definition, they are ultimately **linked to the ZKP Definition ID in the Issue Profile**.
+
+Therefore, to configure ZKP-based VC issuance, you must first define the claim structure through this menu.
+Namespaces can be modified after registration, but **deletion is restricted**.
+
+> Example claim items:
+>
+> * Label: birth\_date
+> * Type: date
+> * Caption: Date of Birth
+
+---
+
+> This menu is **available after completing Issuer registration**. It serves as the starting point for defining claims used in ZKP-based VC issuance and must be referenced when registering Credential Schemas and Definitions.
 
 ### ▸ Namespace List
 
@@ -644,11 +756,13 @@ This is a space for defining sets of Claims to be used for ZKP issuance, includi
 
 - You can view registered Namespace information.
 - You can verify the list of Claim items in the Attributes table at the bottom.
-- Clicking the `GO TO EDIT` button moves to the edit screen
 
 ---
 
 ### ▸ Namespace Update
+
+> You can modify the namespace if it is not used by any Credential Schema.
+> If it is referenced by a VC Schema, modification is not allowed.
 
 <img src="./images/3-4-1.namespace-edit.png" width="700"/>
 
@@ -659,7 +773,34 @@ This is a space for defining sets of Claims to be used for ZKP issuance, includi
 
 ## 3.4.2. Credential Schema Management
 
-Defines ZKP Credential Schema composed based on Namespace. This schema structure is used when issuing ZKP VCs.
+Credential Schema Management is the menu for defining and managing **ZKP Credential Schemas** used in ZKP-based Credential issuance.
+
+A ZKP Credential Schema is **constructed based on the claim items defined in the ZKP Namespace**, and determines what information will be included in the VC.
+
+This schema has a structure separate from the standard VC Schema and includes **only claim information optimized for ZKP**.
+Each claim included in the schema is later used as an input for ZKP proof and is **linked one-to-one with a ZKP Definition**.
+
+---
+
+### Differences Between Standard VC Schema and ZKP Credential Schema
+
+| Item           | VC Schema (Standard VC)         | ZKP Credential Schema                  |
+| -------------- | ------------------------------- | -------------------------------------- |
+| Reference Base | Standard VC Namespace           | ZKP Namespace                          |
+| Purpose        | Claim structure for VC issuance | VC structure for ZKP proof             |
+| Usage          | Referenced by Issue Profile     | Linked to Credential Definition        |
+| Key Features   | Can include various claims      | **Contains only claims for ZKP proof** |
+
+---
+
+The Credential Schema must be **selected when registering a Credential Definition**,
+and through the Definition ID, it is ultimately linked to the Issue Profile.
+
+When composing a Credential Schema, you must check **whether the selected claim items are suitable for ZKP proof**,
+and assemble them based on the ZKP Namespace.
+
+> This menu is **available only after completing Issuer registration and ZKP Namespace registration**.
+> The Credential Schema defines the structure for ZKP issuance and becomes a core reference for generating ZKP Definitions and issuing VCs.
 
 ### ▸ Credential Schema List
 
@@ -697,8 +838,42 @@ Defines ZKP Credential Schema composed based on Namespace. This schema structure
 
 ## 3.4.3. Credential Definition Management
 
-Credential Definition is a schema-based definition to be used when issuing actual Credentials.  
-Definition ID must be unique in the ZKP network and is connected 1:1 with the schema.
+Credential Definition Management is the menu for defining and managing **Credential Definitions** used for issuing ZKP-based Verifiable Credentials (VCs).
+
+A Credential Definition is a policy specification that determines **how ZKP Credentials are generated and verified**, based on a specific ZKP Credential Schema.
+This definition serves as **reference information for generating ZKP Credentials during VC issuance**.
+
+---
+
+### ZKP Credential Generation and Delivery at Issuance
+
+An **Issue Profile** configured for ZKP issuance references this Definition.
+When a user receives a VC based on that profile, the system generates the following two credentials:
+
+1. A standard Verifiable Credential (in JSON-LD or JWT format)
+2. A ZKP Credential (in a structured ZKP format, e.g., data for CL proof)
+
+The generated ZKP Credential follows the structure and policy defined in the Definition and is
+**immediately delivered to the user upon issuance**.
+The user can later present this credential to a verifier to perform **proof via Zero-Knowledge Proof**.
+
+The Definition itself is published to the blockchain and can be referenced,
+serving as **reference information for generating ZKP Credentials and verifying them within the system**.
+
+---
+
+### Components of a Credential Definition
+
+* **Credential Schema**: The ZKP Credential Schema this definition is based on
+* **Definition Alias**: A human-readable alias used to distinguish the definition
+* **Definition Version**: Version information of the definition
+* **Definition Type**: Proof method (e.g., `CL`)
+* **Definition Tag**: Tag used for management and search purposes
+
+---
+
+> This menu is **available only after completing Issuer registration and ZKP Credential Schema registration**.
+> A Credential Definition is **used as reference information for generating and delivering ZKP Credentials to users during VC issuance**.
 
 ### ▸ Credential Definition List
 
@@ -737,8 +912,12 @@ Definition ID must be unique in the ZKP network and is connected 1:1 with the sc
 
 ## 3.5. User Management
 
-User Management is a menu for managing user information for VC recipients.  
-Users are registered based on DID, and user VC data is stored based on one VC Schema.
+User Management is the menu for **viewing user information referenced during Verifiable Credential (VC) issuance**.
+User information includes **DID, PII, and VC data (claims)** required for issuing VCs,
+and this information is automatically registered in the system at the time of issuance.
+
+Registered users are treated as VC recipients, and the system uses their information to **generate personalized VCs**.
+User information is linked to a VC Schema and is used to extract and validate field values during VC creation.
 
 ---
 
@@ -752,29 +931,6 @@ Users are registered based on DID, and user VC data is stored based on one VC Sc
 | **VC Schema** | ID of the VC Schema the user is linked to |
 | **Registered At** | Initial registration date and time |
 | **Updated At** | Last modification date and time |
-
-> Move to new user registration screen with the `REGISTER` button,  
-> Select items from the list and use the `UPDATE` button to modify.
-
----
-
-### ▸ User Registration (Register)
-
-<img src="./images/3-5-2.user-register.png" width="700"/>
-
-| Item | Description |
-|------|------|
-| **DID** | User's DID (unique identifier) |
-| **VC Schema ID** | Schema ID of the VC to be issued (selectable by clicking magnifying glass icon) |
-| **FirstName / LastName** | User's name information. Internally merged and stored as `PII`. |
-| **User VC Info** | User information to be used for VC issuance (input in JSON format) |
-
-- For `User VC Info`, input must be based on the Namespace included in the previously registered VC Schema. 
-- `{Namespace_ID}.{CLAIM_ID}`
- - Example: {"iso.18013.5.name": "KimRaon", "iso.18013.5.birth_date": "2000-01-01"}
-
-> After entering all required items, click the `REGISTER` button to register the user.  
-> `RESET` initializes input values, and `BACK` returns to the list screen.
 
 ---
 
@@ -791,30 +947,14 @@ Users are registered based on DID, and user VC data is stored based on one VC Sc
 | **Created At** | User registration date and time |
 | **Updated At** | Last modification date and time |
 
-> You can move to the edit screen with the `GO TO EDIT` button.
-
 ---
-
-### ▸ User Information Update
-
-<img src="./images/3-5-4.user-edit.png" width="700"/>
-
-| Item | Description |
-|------|------|
-| **DID** | User's unique identifier |
-| **PII** | Personal identification information |
-| **VC Schema ID** | Linked VC Schema |
-| **User VC Info** | VC data to be issued to the user (input/modifiable in JSON format) |
-
-> Once editing is complete, you can save by clicking the `UPDATE` button.  
-> `RESET` returns the entered content to its initial state, and `BACK` returns to the detailed screen.
 
 ## 3.6. Issued VC Management
 
 Issued VC Management is a function that allows you to view the list of issued Verifiable Credentials (VCs) and manage their status.  
 This screen provides an **UPDATE function** for changing VC status.
 
-### ▸ VC List
+### ▸ Issued VC List
 
 <img src="./images/3-6-1.issued-vc-management.png" width="700"/>
 
@@ -826,7 +966,7 @@ This screen provides an **UPDATE function** for changing VC status.
 
 - When you select an item from the list, the `UPDATE` button at the top becomes active.
 
-### ▸ VC Status Change
+### ▸ Issued VC Status Change
 
 You can change the status of the selected VC. Status changes are possible according to the following conditions.
 
@@ -846,9 +986,9 @@ You can change the status of the selected VC. Status changes are possible accord
 2. Select status in the **Change VC Status** dialog  
 3. After confirmation and saving, the VC status is changed
 
-### ▸ VC Detailed Information
+### ▸ Issued VC Detailed Information
 
-<img src="./images/3-6-3.issued-vc-detail.png" width="700"/>
+<img src="./images/3-6-3.issued-vc-detail.png" width="500"/>
 
 | Item | Description |
 |------|------|
@@ -857,9 +997,6 @@ You can change the status of the selected VC. Status changes are possible accord
 | **VC Schema** | VC schema that was issued |
 | **Status** | VC status (`ACTIVE`, `REVOKE`, etc.) |
 | **Created At / Updated At** | Creation and modification time |
-
-> Currently only viewing is possible, and functions such as status changes may be added in the future.
-
 
 ## 3.7. Admin Management
 
@@ -903,7 +1040,7 @@ When you enter the `Admin Management` menu, a list of registered administrator a
 
 Clicking the **REGISTER** button on the `Admin Management` screen moves to the registration screen as shown below.
 
-<img src="./images/3-7-2.admin-registration.png" width="600"/>
+<img src="./images/3-7-2.admin-registration.png" width="500"/>
 
 | Number | Item                        | Description                                                                |
 | ---- | --------------------------- | ------------------------------------------------------------------- |
