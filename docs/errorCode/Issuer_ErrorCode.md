@@ -18,13 +18,13 @@ puppeteer:
 Issuer Server Error
 ==
 
-- Date: 2024-08-20
-- Version: v1.0.0
+- Date: 2025-05-30
+- Version: v2.0.0
 
 | Version          | Date       | Changes                  |
 | ---------------- | ---------- | ------------------------ |
 | v1.0.0  | 2024-08-20 | Initial version          |
-| v2.0.0 | 2025-06-10 | add ErrorCode |
+| v2.0.0 | 2025-05-30 | add ErrorCode |
 
 <div style="page-break-after: always;"></div>
 
