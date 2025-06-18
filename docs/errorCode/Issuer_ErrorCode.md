@@ -24,6 +24,7 @@ Issuer Server Error
 | Version          | Date       | Changes                  |
 | ---------------- | ---------- | ------------------------ |
 | v1.0.0  | 2024-08-20 | Initial version          |
+| v2.0.0 | 2025-06-10 | add ErrorCode |
 
 <div style="page-break-after: always;"></div>
 
