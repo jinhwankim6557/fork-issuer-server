@@ -59,12 +59,16 @@ const ZkpNamespaceRegistrationPage = () => {
   const [errors, setErrors] = useState<ErrorState>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isNamespaceIdIsValid, setIsNamespaceIdValid] = useState(false);
+  const [namespaceIdCheckMessage, setNamespaceIdCheckMessage] = useState<string>('');
+  const [namespaceIdCheckStatus, setNamespaceIdCheckStatus] = useState<'success' | 'error' | ''>('');
 
   const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
     if (field === "namespaceId") {
       setIsNamespaceIdValid(false);
       setErrors((prev) => ({ ...prev, namespaceId: undefined }));
+      setNamespaceIdCheckMessage('');
+      setNamespaceIdCheckStatus('');
     }
   };
 
@@ -240,18 +244,35 @@ const ZkpNamespaceRegistrationPage = () => {
       items: [],
     });
     setIsNamespaceIdValid(false);
+    setNamespaceIdCheckMessage('');
+    setNamespaceIdCheckStatus('');
   };
 
   const handleCheckDuplicateNamespaceId = () => {
+    if (!formData.namespaceId.trim()) {
+      setNamespaceIdCheckMessage('Please enter a namespace ID first.');
+      setNamespaceIdCheckStatus('error');
+      return;
+    }
+
     verifyNamespaceIdUnique(formData.namespaceId) 
     .then((response) => {
-        if (response.data.unique === false) {
+        if (response.data.isUnique === false) {
             setErrors((prev) => ({ ...prev, namespaceId: 'Namespace ID already exists.' }));
             setIsNamespaceIdValid(false);
+            setNamespaceIdCheckMessage('This namespace ID is already in use. Please choose a different one.');
+            setNamespaceIdCheckStatus('error');
         } else {        
             setIsNamespaceIdValid(true);
             setErrors((prev) => ({ ...prev, namespaceId: undefined }));
+            setNamespaceIdCheckMessage('This namespace ID is available for use.');
+            setNamespaceIdCheckStatus('success');
         }
+    })
+    .catch((error) => {
+        setIsNamespaceIdValid(false);
+        setNamespaceIdCheckMessage('Failed to check namespace ID availability. Please try again.');
+        setNamespaceIdCheckStatus('error');
     });
   };
 
@@ -292,7 +313,6 @@ const ZkpNamespaceRegistrationPage = () => {
               fullWidth
               size="small"
               margin="normal"
-              sx={{ width: '60%' }}
               value={formData.namespaceId}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const value = e.target.value;
@@ -301,7 +321,15 @@ const ZkpNamespaceRegistrationPage = () => {
                 }
               }}
               error={!!errors.namespaceId}
-              helperText={errors.namespaceId}
+              helperText={errors.namespaceId || namespaceIdCheckMessage}
+              sx={{
+                width: '60%',
+                '& .MuiFormHelperText-root': {
+                  color: namespaceIdCheckStatus === 'success' ? 'green' :
+                         namespaceIdCheckStatus === 'error' ? 'red' : 'inherit',
+                  fontWeight: namespaceIdCheckStatus ? 500 : 'inherit'
+                }
+              }}
             />
 
             <Button 
