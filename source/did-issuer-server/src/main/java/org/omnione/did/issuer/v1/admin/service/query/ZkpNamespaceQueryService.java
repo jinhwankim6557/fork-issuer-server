@@ -95,8 +95,8 @@ public class ZkpNamespaceQueryService {
     }
 
     public void deleteZkpNamespaceById(Long id) {
-        zkpNamespaceRepository.deleteById(id);
         zkpAttributeRepository.deleteByZkpNamespaceId(id);
+        zkpNamespaceRepository.deleteById(id);
     }
 
     public long countByNamespaceId(String namespaceId) {
