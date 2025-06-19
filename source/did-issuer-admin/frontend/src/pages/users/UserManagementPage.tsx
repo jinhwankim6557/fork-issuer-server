@@ -86,7 +86,7 @@ const UserManagementPage = (props: Props) => {
             { field: 'updatedAt', headerName: "Updated At", width: 200 },
             {
               field: "",
-              headerName: "확인",
+              headerName: "View",
               width: 150,
               renderCell: (params) => (
                 <Box sx={{
@@ -99,7 +99,7 @@ const UserManagementPage = (props: Props) => {
                     size="small"
                     onClick={() => navigate(`/users/user-management/${params.row.id}`)}
                   >
-                    상세보기
+                    View
                   </Button>
                 </Box>
               )

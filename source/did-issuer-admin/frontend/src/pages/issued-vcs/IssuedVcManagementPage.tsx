@@ -51,7 +51,7 @@ const IssuedVcManagementPage = (props: Props) => {
 
   const handleStatusEdit = () => {
     if (!selectedRowData || selectedRowData.status === 'REVOKED') {
-      alert('REVOKED 상태는 변경할 수 없습니다.');
+      alert('The REVOKED state cannot be changed to any other state.');
       return;
     }
 
