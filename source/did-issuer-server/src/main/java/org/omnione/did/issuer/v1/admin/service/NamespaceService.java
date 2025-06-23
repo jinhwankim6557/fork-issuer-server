@@ -16,8 +16,8 @@
 
 package org.omnione.did.issuer.v1.admin.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.omnione.did.base.db.domain.Namespace;
 import org.omnione.did.base.exception.ErrorCode;
 import org.omnione.did.base.exception.OpenDidException;
@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
  * This service provides operations for creating, updating, deleting, retrieving,
  * and searching namespace metadata, including schema claim associations.
  */
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class NamespaceService {
@@ -53,6 +52,7 @@ public class NamespaceService {
      * @param request the schema claims data
      * @return response DTO indicating creation result
      */
+    @Transactional
     public CreateNamespaceResDto createNamespaceReqDto(SchemaClaims request) {
         Namespace namespace = namespaceQueryService.save(Namespace.builder()
                 .namespaceId(request.getNamespace().getId())
@@ -70,11 +70,8 @@ public class NamespaceService {
      * @param pageable pagination information
      * @return page of namespaces
      */
+    @Transactional(readOnly = true)
     public Page<Namespace> getNamespacesByPageable(Pageable pageable) {
-        Page<Namespace> namespaceList = namespaceQueryService.findAll(pageable);
-        for (Namespace namespace : namespaceList.getContent()) {
-            namespace.setSchemaClaims(null);
-        }
         return namespaceQueryService.findAll(pageable);
     }
 
@@ -86,6 +83,7 @@ public class NamespaceService {
      * @param pageable    pagination information
      * @return page of matching namespace DTOs with VC schema counts
      */
+    @Transactional(readOnly = true)
     public PageImpl<NamespaceDto> searchNamespaceList(String searchKey, String searchValue, Pageable pageable) {
         PageImpl<NamespaceDto> result = namespaceQueryService.searchNamespaceList(searchKey, searchValue, pageable);
         
@@ -116,6 +114,7 @@ public class NamespaceService {
      * @param request the update request DTO containing schema claims
      * @return the updated namespace DTO
      */
+    @Transactional
     public NamespaceDto updateNamespace(UpdateNamespaceReqDto request) {
         // Check if namespace is in use by VC schemas
         int vcSchemaCount = namespaceQueryService.countVcSchemasByNamespaceId(request.getId());
@@ -138,6 +137,7 @@ public class NamespaceService {
      *
      * @param id the ID of the namespace to delete
      */
+    @Transactional
     public void deleteNamespaceById(Long id) {
         // Check if namespace is in use by VC schemas
         int vcSchemaCount = namespaceQueryService.countVcSchemasByNamespaceId(id);
@@ -154,6 +154,7 @@ public class NamespaceService {
      * @param id the ID of the namespace
      * @return the namespace DTO with VC schema count
      */
+    @Transactional(readOnly = true)
     public NamespaceDto getNamespaceById(Long id) {
         Namespace namespace = namespaceQueryService.findById(id);
         int vcSchemaCount = namespaceQueryService.countVcSchemasByNamespaceId(id);
