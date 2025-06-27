@@ -26,6 +26,7 @@ import org.omnione.did.base.property.BlockchainProperty;
 import org.omnione.did.data.model.did.DidDocAndStatus;
 import org.omnione.did.data.model.did.DidDocument;
 import org.omnione.did.data.model.enums.vc.VcStatus;
+import org.omnione.did.data.model.schema.VcSchema;
 import org.omnione.did.data.model.vc.VcMeta;
 import org.omnione.did.zkp.datamodel.definition.CredentialDefinition;
 import org.omnione.did.zkp.datamodel.schema.CredentialSchema;
@@ -40,7 +41,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Profile("!repository")
+@Profile({"!lss & !sample"})
 public class BlockChainServiceImpl implements StorageService {
 
     private final ContractApi contractApi;
@@ -127,8 +128,8 @@ public class BlockChainServiceImpl implements StorageService {
         try {
             contractApi.registZKPCredential(credentialSchema);
         } catch (BlockChainException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            log.error("Failed to get DID Document: " + e.getMessage());
+            throw new OpenDidException(ErrorCode.ZKP_SCHEMA_REGISTRATION_FAILED);
         }
     }
 
@@ -138,8 +139,28 @@ public class BlockChainServiceImpl implements StorageService {
         try {
             contractApi.registZKPCredentialDefinition(credentialDefinition);
         } catch (BlockChainException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            log.error("Failed to get DID Document: " + e.getMessage());
+            throw new OpenDidException(ErrorCode.CREDENTIAL_DEFINITION_REGISTRATION_FAILED);
+        }
+    }
+
+    @Override
+    public void registerVcSchema(VcSchema vcSchema, String did) {
+        try {
+            contractApi.registVcSchema(vcSchema);
+        } catch (BlockChainException e) {
+            log.error("Failed to get DID Document: " + e.getMessage());
+            throw new OpenDidException(ErrorCode.VC_SCHEMA_REGISTRATION_FAILED);
+        }
+    }
+
+    @Override
+    public VcSchema getVcSchema(String vcSchemaId) {
+        try {
+            return (VcSchema) contractApi.getVcSchema(vcSchemaId);
+        } catch (BlockChainException e) {
+            log.error("Failed to get DID Document: " + e.getMessage());
+            throw new OpenDidException(ErrorCode.VC_SCHEMA_NOT_FOUND);
         }
     }
 
@@ -148,8 +169,8 @@ public class BlockChainServiceImpl implements StorageService {
         try {
             return (CredentialSchema) contractApi.getZKPCredential(credentialSchemaId);
         } catch (BlockChainException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            log.error("Failed to get DID Document: " + e.getMessage());
+            throw new OpenDidException(ErrorCode.ZKP_SCHEMA_NOT_FOUND);
         }
     }
 
@@ -158,8 +179,8 @@ public class BlockChainServiceImpl implements StorageService {
         try {
             return (CredentialDefinition) contractApi.getZKPCredentialDefinition(credentialDefinitionId);
         } catch (BlockChainException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            log.error("Failed to get DID Document: " + e.getMessage());
+            throw new OpenDidException(ErrorCode.ZKP_CREDENTIAL_DEFINITION_NOT_FOUND);
         }
     }
 

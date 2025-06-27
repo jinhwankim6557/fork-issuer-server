@@ -144,5 +144,7 @@ public class IssueProfileService {
         issueProfile.setTags(request.getTags());
         issueProfile.setZkpEnabled(request.getZkpEnabled());
         issueProfile.setDefinitionId(request.getDefinitionId());
+
+        listCommunityService.registerVcPlan(issueProfile);
     }
 }

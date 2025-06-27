@@ -46,7 +46,7 @@ const VcSchemaManagementPage = (props: Props) => {
     fetchVcSchema(paginationModel.page, paginationModel.pageSize, null, null)
       .then((response) => {
         setRows(response.data.content);
-        setTotalRows(response.data.totalElements);
+        setTotalRows(response.data.total);
       })
       .catch((error) => {
         console.error("Failed to retrieve namespaces. ", error);
@@ -133,13 +133,13 @@ const VcSchemaManagementPage = (props: Props) => {
           ]}
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
-          onEdit={() => {
-            if (selectedRowData) {
-              navigate(`/vc-management/vc-schema-management/vc-schema-edit/${selectedRowData.id}`);
-            }
-          }}
+          // onEdit={() => {
+          //   if (selectedRowData) {
+          //     navigate(`/vc-management/vc-schema-management/vc-schema-edit/${selectedRowData.id}`);
+          //   }
+          // }}
           onRegister={() => navigate('/vc-management/vc-schema-management/vc-schema-registration')}
-          onDelete={handleDelete}
+          // onDelete={handleDelete}
           additionalButtons={[
 
           ]}

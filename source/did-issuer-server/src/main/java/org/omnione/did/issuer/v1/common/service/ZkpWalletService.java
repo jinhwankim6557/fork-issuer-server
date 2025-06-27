@@ -17,7 +17,6 @@ import org.omnione.did.zkp.exception.ZkpException;
 import org.omnione.did.zkp.wallet.key.ZkpWalletManagerInterface;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -99,6 +98,14 @@ public class ZkpWalletService {
         } catch (ZkpException e) {
             log.error("Failed to Generate Correctness Proof: {}", e.getMessage());
             throw new OpenDidException(ErrorCode.FAILED_TO_GENERATE_CORRECTNESS_PROOF);
+        }
+    }
+
+    public void deleteZkpKeyByAlias(String alias) {
+        try {
+            zkpWalletManager.removeZkpKey(alias);
+        } catch (ZkpException e) {
+            log.error("Failed to Remove ZKP Key: {}", e.getMessage());
         }
     }
 }

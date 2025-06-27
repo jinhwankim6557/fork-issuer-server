@@ -18,6 +18,7 @@ package org.omnione.did.issuer.v1.common.service;
 
 import org.omnione.did.data.model.did.DidDocument;
 import org.omnione.did.data.model.enums.vc.VcStatus;
+import org.omnione.did.data.model.schema.VcSchema;
 import org.omnione.did.data.model.vc.VcMeta;
 import org.omnione.did.zkp.datamodel.definition.CredentialDefinition;
 import org.omnione.did.zkp.datamodel.schema.CredentialSchema;
@@ -56,6 +57,9 @@ public interface StorageService {
 
     void registerCredentialSchema(CredentialSchema credentialSchema);
     void registerCredentialDefinition(CredentialDefinition credentialDefinition);
+
+    void registerVcSchema(VcSchema vcSchema, String did);
+    VcSchema getVcSchema(String vcSchemaId);
 
     CredentialSchema getCredentialSchema(String credentialSchemaId);
     CredentialDefinition getCredentialDefinition(String credentialDefinitionId);

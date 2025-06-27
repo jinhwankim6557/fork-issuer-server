@@ -6,8 +6,10 @@ import org.omnione.did.base.property.BlockchainProperty;
 import org.omnione.did.zkp.datamodel.enums.CredentialType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile({"!lss & !sample"})
 public class ContractApiConfig {
     @Bean
     public ContractApi contractApi(BlockchainProperty blockchainProperty) {

@@ -8,6 +8,7 @@ import { getNamespace, patchNamespace } from "../../../apis/vc-management-api";
 import { useDialogs } from "@toolpad/core";
 import CustomConfirmDialog from "../../../components/dialog/CustomConfirmDialog";
 import CustomDialog from "../../../components/dialog/CustomDialog";
+import { formatErrorMessage } from "../../../utils/error-handler";
 
 type Props = {};
 
@@ -171,11 +172,23 @@ const NamespaceEditPage = (props: Props) => {
                 }, {
                     onClose: async (result) => navigate('/vc-management/namespace-management'),
                 });
-            } catch (error) {
+            } catch (error: any) {
                 setIsLoading(false);
+                
+                // Check if it's the namespace update conflict error and provide consistent message
+                const formattedError = formatErrorMessage(error, "Failed to update namespace.");
+                let errorMessage = formattedError;
+                
+                if (formattedError.includes('NAMESPACE_UPDATE_CONFLICT') || 
+                    formattedError.includes('referenced by a VC schema') ||
+                    formattedError.includes('cannot be updated') ||
+                    error?.response?.data?.code === 'NAMESPACE_UPDATE_CONFLICT') {
+                    errorMessage = 'This namespace is in use by one or more VC schemas and cannot be updated.';
+                }
+                
                 await dialogs.open(CustomDialog, {
                     title: 'Notification',
-                    message: `Failed to update namespace: ${error}`,
+                    message: errorMessage,
                     isModal: true,
                 });
             }
@@ -333,7 +346,12 @@ const NamespaceEditPage = (props: Props) => {
                                                 fullWidth
                                                 size="small"
                                                 value={item.id}
-                                                onChange={handleTextChange(index, "id")}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                    const value = e.target.value;
+                                                    if (!/\s/.test(value)) {
+                                                        handleTextChange(index, "id")(e);
+                                                    }
+                                                    }}
                                                 error={!!errors.items?.[index]?.id}
                                                 helperText={errors.items?.[index]?.id}
                                                 sx={{ width: 150 }}

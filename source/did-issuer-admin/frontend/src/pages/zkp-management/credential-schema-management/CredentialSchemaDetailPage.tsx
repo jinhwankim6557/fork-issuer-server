@@ -115,7 +115,7 @@ const CredentialSchemaDetailPage = () => {
       <Typography variant="h4">Credential Schema Management</Typography>
 
       <StyledContainer>
-        <StyledTitle>Credential Schema Registration</StyledTitle>
+        <StyledTitle>Credential Schema Detail Information</StyledTitle>
 
         <StyledInputArea>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

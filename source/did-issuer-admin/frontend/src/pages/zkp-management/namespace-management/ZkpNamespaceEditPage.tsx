@@ -316,7 +316,12 @@ const ZkpNamespaceEditPage = () => {
                         fullWidth
                         size="small"
                         value={item.label}
-                        onChange={handleItemTextChange(index, "label")}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          const value = e.target.value;
+                          if (!/\s/.test(value)) {
+                            handleItemTextChange(index, "label")(e);
+                          }
+                        }}
                         error={!!errors.items?.[index]?.label}
                         helperText={errors.items?.[index]?.label}
                         disabled={isInitial} // 기존 row 비활성화

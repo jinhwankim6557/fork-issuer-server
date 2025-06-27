@@ -292,7 +292,12 @@ const VcSchemaRegistrationPage = (props: Props) => {
             size="small"
             sx={{ width: '60%' }}
             value={formData.vcSchemaId}
-            onChange={handleChange('vcSchemaId')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              if (!/\s/.test(value)) {
+                  handleChange('vcSchemaId')(e);
+              }
+            }}
             error={!!errors.vcSchemaId}
             helperText={errors.vcSchemaId}
           />

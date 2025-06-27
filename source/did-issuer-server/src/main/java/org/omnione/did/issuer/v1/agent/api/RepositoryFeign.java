@@ -17,12 +17,9 @@
 package org.omnione.did.issuer.v1.agent.api;
 
 
+import org.omnione.did.base.constants.UrlConstant;
 import org.omnione.did.data.model.vc.VcMeta;
-import org.omnione.did.issuer.v1.agent.api.dto.DidDocApiResDto;
-import org.omnione.did.issuer.v1.agent.api.dto.UpdateVcStatusApiReqDto;
-import org.omnione.did.issuer.v1.agent.api.dto.VcMetaApiResDto;
-import org.omnione.did.zkp.datamodel.definition.CredentialDefinition;
-import org.omnione.did.zkp.datamodel.schema.CredentialSchema;
+import org.omnione.did.issuer.v1.agent.api.dto.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.openfeign.FeignClient;
 
@@ -31,42 +28,84 @@ import org.springframework.cloud.openfeign.FeignClient;
  * RepositoryFeign
  * This is a Feign client that communicates with the Storage API.
  */
-@FeignClient(value = "Storage", url = "http://127.0.0.1:8097/repository", path = "/api/v1")
+@FeignClient(value = "Storage", url = "${lss.url:http://127.0.0.1:8098}" + UrlConstant.LSS.V1)
 public interface RepositoryFeign {
+
     /**
-     * getDid
-     * @param did String
-     * @return DidDocApiResDto
+     * Gets a DID document by its DID.
+     *
+     * @param did DID to get the document for.
+     * @return Found DID document.
      */
-    @GetMapping("/did-doc")
-    DidDocApiResDto getDid(@RequestParam(name = "did") String did);
+    @GetMapping(UrlConstant.LSS.DID)
+    String getDid(@RequestParam(name = "did") String did);
+
     /**
-     * getVcMetaData
-     * @param vcId String
-     * @return VcMetaApiResDto
+     * Gets metadata for a Verifiable Credential (VC) by vc-id
+     *
+     * @param vcId Identifier of the Verifiable Credential.
+     * @return Found VC metadata.
      */
-    @GetMapping("/vc-meta")
-    VcMetaApiResDto getVcMetaData(@RequestParam(name = "vcId") String vcId);
+    @GetMapping(UrlConstant.LSS.VC_META)
+    String getVcMetaData(@RequestParam(name = "vcId") String vcId);
+
     /**
-     * inputVcMeta
-     * @param vcMeta VcMeta
+     * Register a VC metadata.
+     * @param vcMeta VC Metadata to register
      */
-    @PostMapping("/vc-meta")
+    @PostMapping(UrlConstant.LSS.VC_META)
     void inputVcMeta(@RequestBody VcMeta vcMeta);
+
     /**
-     * updateVcStatus
-     * @param request UpdateVcStatusApiReqDto
+     * Update the status of a VC.
+     *
+     * @param request Request containing the VC ID and the new status.
      */
-    @PutMapping("/vc-meta")
+    @PutMapping(UrlConstant.LSS.VC_META)
     void updateVcStatus(@RequestBody UpdateVcStatusApiReqDto request);
 
+    /**
+     * Register a ZKP Credential Schema.
+     * @param credentialSchema Credential Schema to register
+     */
     @PostMapping("/credential-schema")
-    void registerCredentialSchema(CredentialSchema credentialSchema);
-    @PostMapping("/credential-definition")
-    void registerCredentialDefinition(CredentialDefinition credentialDefinition);
+    void registerCredentialSchema(InputZkpCredentialSchemaReqDto credentialSchema);
 
+    /**
+     * Register a ZKP Credential Definition.
+     * @param credentialDefinition Credential Definition to register
+     */
+    @PostMapping("/credential-definition")
+    void registerCredentialDefinition(InputZkpCredentialDefinitionReqDto credentialDefinition);
+
+    /**
+     * Get a Credential Schema by schema-id
+     * @param schemaId the credential schema id
+     * @return the encoded Credential Schema
+     */
     @GetMapping("/credential-schema")
-    CredentialSchema getCredentialSchema(@RequestParam String credentialSchemaId);
+    String getCredentialSchema(@RequestParam(name = "schemaId") String schemaId);
+
+    /**
+     * Get a Credential Definition by credential-definition-id
+     * @param definitionId the credential definition id
+     * @return the encoded Credential Definition
+     */
     @GetMapping("/credential-definition")
-    CredentialDefinition getCredentialDefinition(@RequestParam String credentialDefinitionId);
+    String getCredentialDefinition(@RequestParam(name = "definitionId") String definitionId);
+
+    /**
+     * Register a ZKP Credential Definition.
+     * @param vcSchema the VC Schema to register
+     */
+    @PostMapping("/vc-schema")
+    void registerVcSchema(InputVcSchemaReqDto vcSchema);
+
+    /**
+     * Get a Credential Schema by schema-id
+     * @param schemaId the credential schema id
+     * @return the encoded Credential Schema
+     */
+    @GetMapping("/vc-schema")
+    String getVcSchema(@RequestParam(name = "schemaId") String schemaId);
 }

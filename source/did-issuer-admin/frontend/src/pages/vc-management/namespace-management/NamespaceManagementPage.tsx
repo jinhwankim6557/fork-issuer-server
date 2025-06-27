@@ -16,6 +16,7 @@ type NamespaceRow = {
   id: string | number;
   namespaceId: string;
   name: string;
+  vcSchemaCount: number;
   createdAt: string;
 };
 
@@ -38,7 +39,33 @@ const NamespaceManagementPage = (props: Props) => {
     [rows, selectedRow]
   );
 
+  const handleUpdate = async () => {
+    if (!selectedRowData) return;
+
+    if (selectedRowData.vcSchemaCount > 0) {
+      await dialogs.open(CustomDialog, {
+        title: 'Notification',
+        message: 'This namespace is in use by one or more VC schemas and cannot be updated.',
+        isModal: true,
+      });
+      return;
+    }
+
+    navigate(`/vc-management/namespace-management/namespace-edit/${selectedRowData.id}`);
+  };
+
   const handleDelete = async () => {
+    if (!selectedRowData) return;
+
+    if (selectedRowData.vcSchemaCount > 0) {
+      await dialogs.open(CustomDialog, {
+        title: 'Notification',
+        message: 'This namespace is in use by one or more VC schemas and cannot be deleted.',
+        isModal: true,
+      });
+      return;
+    }
+
     const id = selectedRowData?.id as number;
     if (id) {
       const result = await dialogs.open(CustomConfirmDialog, {
@@ -68,14 +95,14 @@ const NamespaceManagementPage = (props: Props) => {
           .finally(() => setLoading(false));
       }
     }
-};
+  };
   
   useEffect(() => {
     setLoading(true);
     fetchNamespaces(paginationModel.page, paginationModel.pageSize, null, null)
       .then((response) => {
         setRows(response.data.content);
-        setTotalRows(response.data.totalElements);
+        setTotalRows(response.data.total);
       })
       .catch((error) => {
         console.error("Failed to retrieve namespaces. ", error);
@@ -123,15 +150,12 @@ const NamespaceManagementPage = (props: Props) => {
                     {params.value}
                   </Link>),
               },
+              { field: 'vcSchemaCount', headerName: "VC Schema Count", width: 150 },
               { field: 'createdAt', headerName: "Registered At", width: 200},
             ]} 
             selectedRow={selectedRow} 
             setSelectedRow={setSelectedRow}
-            onEdit={() => {
-              if (selectedRowData) {
-                navigate(`/vc-management/namespace-management/namespace-edit/${selectedRowData.id}`);
-              }
-            }}
+            onEdit={handleUpdate}
             onRegister={() => navigate('/vc-management/namespace-management/namespace-registration')}
             onDelete={handleDelete}
             additionalButtons={[

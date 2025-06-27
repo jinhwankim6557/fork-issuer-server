@@ -138,4 +138,17 @@ public class BaseCoreVcUtil {
 
         return vcManager.generateVcMetaData(vc, certVcRef);
     }
+
+    /**
+     * Parses VC metadata from its JSON representation.
+     *
+     * @param vcMetaJson The JSON string representing the VC metadata.
+     * @return The parsed VC metadata object.
+     */
+    public static VcMeta parseVcMeta(String vcMetaJson) {
+        VcMeta vcMeta = new VcMeta();
+        vcMeta.fromJson(vcMetaJson);
+
+        return vcMeta;
+    }
 }
