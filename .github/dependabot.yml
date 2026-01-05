@@ -1,0 +1,47 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    
+    reviewers:
+      - "yoongyu-lee"
+      - "gw-nam"
+      - "jhkim6557"
+    assignees:
+      - "mikyung-lee"
+      - "yoongyu-lee"
+      - "gw-nam"
+      - "jhkim6557"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+      
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+
+    reviewers:
+      - "yoongyu-lee"
+      - "gw-nam"
+      - "jhkim6557"
+    assignees:
+      - "mikyung-lee"
+      - "yoongyu-lee"
+      - "gw-nam"
+      - "jhkim6557"
