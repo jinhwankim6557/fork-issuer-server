@@ -22,6 +22,8 @@ import org.omnione.did.issuer.v1.agent.dto.vc.*;
 import org.omnione.did.issuer.v1.agent.service.VcStatusService;
 
 import org.omnione.did.issuer.v1.agent.service.query.VcSchemaService;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -89,7 +91,11 @@ public class VcController {
      * @return the schema of the VC
      */
     @GetMapping(UrlConstant.Issuer.VC + UrlConstant.Issuer.SCHEMA)
-    public String getVcSchema(@RequestParam(name="name") String name) {
-        return vcSchemaService.getVcSchemaByName(name);
+    public ResponseEntity<String> getVcSchema(@RequestParam(name="name") String name) {
+        String result = vcSchemaService.getVcSchemaByName(name);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result);
     }
 }

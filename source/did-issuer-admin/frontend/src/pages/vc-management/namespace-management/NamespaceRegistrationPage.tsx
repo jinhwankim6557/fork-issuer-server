@@ -228,7 +228,12 @@ const NamespaceRegistrationPage = (props: Props) => {
             size="small"
             sx={{ width: '60%' }}
             value={formData.namespaceId}
-            onChange={handleChange('namespaceId')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              if (!/\s/.test(value)) {
+                  handleChange('namespaceId')(e);
+              }
+            }}
             error={!!errors.namespaceId}
             helperText={errors.namespaceId}
           />
@@ -286,7 +291,12 @@ const NamespaceRegistrationPage = (props: Props) => {
                         fullWidth
                         size="small"
                         value={item.id}
-                        onChange={handleTextChange(index, "id")}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          const value = e.target.value;
+                          if (!/\s/.test(value)) {
+                              handleTextChange(index, "id")(e);
+                          }
+                        }}
                         error={!!errors.items?.[index]?.id}
                         helperText={errors.items?.[index]?.id}
                         sx={{ width: 150 }}

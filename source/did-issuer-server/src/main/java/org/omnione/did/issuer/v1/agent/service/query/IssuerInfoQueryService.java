@@ -51,6 +51,8 @@ public class IssuerInfoQueryService {
     public void save(IssuerInfo issuerInfo) {
         issuerInfoRepository.save(issuerInfo);
 
+        this.issuerInfo.setId(issuerInfo.getId());
+        this.issuerInfo.setDid(issuerInfo.getDid());
         this.issuerInfo.setName(issuerInfo.getName());
         this.issuerInfo.setStatus(issuerInfo.getStatus());
         this.issuerInfo.setServerUrl(issuerInfo.getServerUrl());

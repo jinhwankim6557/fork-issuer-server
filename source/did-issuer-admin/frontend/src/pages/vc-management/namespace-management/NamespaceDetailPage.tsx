@@ -160,7 +160,7 @@ const NamespaceDetailPage = (props: Props) => {
             ) :
               <>
                 <Button variant="contained" color="primary" onClick={() => navigate(-1)}>Back</Button>
-                <Button variant="outlined" color="primary" onClick={() => navigate('/vc-management/namespace-management/namespace-edit/' + numericNamespaceId)}>Go to Edit</Button>
+                {/* <Button variant="outlined" color="primary" onClick={() => navigate('/vc-management/namespace-management/namespace-edit/' + numericNamespaceId)}>Go to Edit</Button> */}
               </>
             }
           </Box>

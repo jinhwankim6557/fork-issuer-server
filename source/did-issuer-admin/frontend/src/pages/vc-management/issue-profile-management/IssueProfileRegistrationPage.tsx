@@ -63,9 +63,22 @@ interface ErrorState {
   definitionId?: string;
 }
 
-const cipherOptions = ["AES-128-CBC", "AES-128-ECB", "AES-256-CBC", "AES-256-ECB"];
-const curveOptions = ["Secp256r1"];
-const paddingOptions = ["PKCS5", "OAEP"];
+const cipherOptions = [
+  { value: "AES-256-CBC", label: "AES-256-CBC", disabled: false },
+  { value: "AES-128-CBC", label: "AES-128-CBC", disabled: true },
+  { value: "AES-128-ECB", label: "AES-128-ECB", disabled: true },
+  { value: "AES-256-ECB", label: "AES-256-ECB", disabled: true }
+];
+
+const curveOptions = [
+  { value: "Secp256r1", label: "Secp256r1", disabled: false },
+  { value: "Secp256k1", label: "Secp256k1", disabled: true }
+];
+
+const paddingOptions = [
+  { value: "PKCS5", label: "PKCS5", disabled: false },
+  { value: "NOPAD", label: "NOPAD", disabled: true }
+];
 const initiateTypeOptions = [{ key: "User Initiate", value: "user_init" },
 { key: "Issuer Initiate", "value": "issuer_init" }
 ];
@@ -311,7 +324,7 @@ const IssueProfileRegistrationPage = (props: Props) => {
   // `tags` 입력 값 변경
   const handleChangeTag = (index: number, value: string) => {
     setFormData((prev) => {
-      const newTags = [...prev.endpoints];
+      const newTags = [...prev.tags];
       newTags[index] = value;
       return { ...prev, tags: newTags };
     });
@@ -465,7 +478,16 @@ const IssueProfileRegistrationPage = (props: Props) => {
         <StyledTitle>Issue Profile Registration</StyledTitle>
 
         <StyledInputArea>
-          <TextField label="VC Plan ID *" fullWidth margin="normal" size="small" value={formData.vcPlanId} error={!!errors.vcPlanId} helperText={errors.vcPlanId} onChange={(e) => setFormData({ ...formData, vcPlanId: e.target.value })} />
+          <TextField 
+            label="VC Plan ID *" 
+            fullWidth 
+            margin="normal" 
+            size="small" 
+            value={formData.vcPlanId} 
+            error={!!errors.vcPlanId} 
+            helperText={errors.vcPlanId} 
+            onChange={(e) => setFormData({ ...formData, vcPlanId: e.target.value.replace(/\s+/g, '') })} 
+          />
           <TextField label="Title *" fullWidth margin="normal" size="small" value={formData.title} error={!!errors.title} helperText={errors.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           <TextField label="Description" fullWidth margin="normal" size="small" value={formData.description} error={!!errors.description} helperText={errors.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
 
@@ -507,7 +529,21 @@ const IssueProfileRegistrationPage = (props: Props) => {
           <FormControl fullWidth size="small" sx={{ margin: 'auto', mt: 2, }}>
             <InputLabel>Cipher *</InputLabel>
             <Select label="Cipher *" value={formData.cipher} error={!!errors.cipher} onChange={handleSelectChange("cipher")}>
-              {cipherOptions.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
+              {cipherOptions.map((option) => (
+                <MenuItem 
+                  key={option.value} 
+                  value={option.value}
+                  disabled={option.disabled}
+                  sx={{
+                    color: option.disabled ? 'rgba(0, 0, 0, 0.38)' : 'inherit',
+                    '&.Mui-disabled': {
+                      color: 'rgba(0, 0, 0, 0.38)'
+                    }
+                  }}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
             </Select>
             <FormHelperText error>{errors.cipher}</FormHelperText>
           </FormControl>
@@ -515,7 +551,21 @@ const IssueProfileRegistrationPage = (props: Props) => {
           <FormControl fullWidth size="small" sx={{ margin: 'auto', mt: 2, }}>
             <InputLabel>Curve *</InputLabel>
             <Select label="Curv *" value={formData.curve} error={!!errors.curve} onChange={handleSelectChange("curve")}>
-              {curveOptions.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
+              {curveOptions.map((option) => (
+                <MenuItem 
+                  key={option.value} 
+                  value={option.value}
+                  disabled={option.disabled}
+                  sx={{
+                    color: option.disabled ? 'rgba(0, 0, 0, 0.38)' : 'inherit',
+                    '&.Mui-disabled': {
+                      color: 'rgba(0, 0, 0, 0.38)'
+                    }
+                  }}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
             </Select>
             <FormHelperText error>{errors.curve}</FormHelperText>
           </FormControl>
@@ -523,7 +573,21 @@ const IssueProfileRegistrationPage = (props: Props) => {
           <FormControl fullWidth size="small" sx={{ margin: 'auto', mt: 2, }}>
             <InputLabel>Padding *</InputLabel>
             <Select label="Padding *" value={formData.padding} error={!!errors.padding} onChange={handleSelectChange("padding")}>
-              {paddingOptions.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
+              {paddingOptions.map((option) => (
+                <MenuItem 
+                  key={option.value} 
+                  value={option.value}
+                  disabled={option.disabled}
+                  sx={{
+                    color: option.disabled ? 'rgba(0, 0, 0, 0.38)' : 'inherit',
+                    '&.Mui-disabled': {
+                      color: 'rgba(0, 0, 0, 0.38)'
+                    }
+                  }}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
             </Select>
             <FormHelperText error>{errors.padding}</FormHelperText>
           </FormControl>

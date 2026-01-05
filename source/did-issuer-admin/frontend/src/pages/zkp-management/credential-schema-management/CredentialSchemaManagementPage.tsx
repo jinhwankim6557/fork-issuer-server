@@ -67,7 +67,7 @@ const CredentialSchemaManagementPage = () => {
     .then((response) => {
         setLoading(false);
         setRows(response.data.content);
-        setTotalRows(response.data.totalElements);
+        setTotalRows(response.data.total);
     })
     .catch((err) => {
       setLoading(false);

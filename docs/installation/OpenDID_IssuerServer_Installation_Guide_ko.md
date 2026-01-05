@@ -18,11 +18,12 @@ puppeteer:
 Open DID Issuer Server Installation Guide
 ==
 
-- Date: 2024-09-02
-- Version: v1.0.0
+- Date: 2025-05-29
+- Version: v2.0.0
 
 목차
 ==
+
 - [Open DID Issuer Server Installation Guide](#open-did-issuer-server-installation-guide)
 - [목차](#목차)
 - [1. 소개](#1-소개)
@@ -72,6 +73,8 @@ Open DID Issuer Server Installation Guide
   - [5.5.1. Blockchain 설정](#551-blockchain-설정)
   - [5.6. blockchain.properties](#56-blockchainproperties)
     - [5.6.1. 블록체인 연동 설정](#561-블록체인-연동-설정)
+      - [EVM Network Configuration](#evm-network-configuration)
+      - [EVM Contract Configuration](#evm-contract-configuration)
 - [6. 프로파일 설정 및 사용](#6-프로파일-설정-및-사용)
   - [6.1. 프로파일 개요 (`sample`, `dev`)](#61-프로파일-개요-sample-dev)
     - [6.1.1. `sample` 프로파일](#611-sample-프로파일)
@@ -82,11 +85,15 @@ Open DID Issuer Server Installation Guide
     - [6.2.3. Docker를 사용한 서버 구동 시](#623-docker를-사용한-서버-구동-시)
 - [7. Docker로 빌드 후 구동하기](#7-docker로-빌드-후-구동하기)
   - [7.1. Docker 이미지 빌드 방법 (`Dockerfile` 기반)](#71-docker-이미지-빌드-방법-dockerfile-기반)
-  - [7.2. Docker 이미지 실행](#72-docker-이미지-실행)
-  - [7.3. Docker Compose를 이용한 구동](#73-docker-compose를-이용한-구동)
-    - [7.3.1. `docker-compose.yml` 파일 설명](#731-docker-composeyml-파일-설명)
-    - [7.3.2. 컨테이너 실행 및 관리](#732-컨테이너-실행-및-관리)
-    - [7.3.3. 서버 설정 방법](#733-서버-설정-방법)
+    - [7.1.1. Docker 이미지 빌드](#711-docker-이미지-빌드)
+  - [7.2. Docker Compose를 이용한 구동](#72-docker-compose를-이용한-구동)
+    - [7.2.1. 디렉토리 및 설정 파일 준비](#721-디렉토리-및-설정-파일-준비)
+      - [1. docker-compose 디렉토리 및 config 디렉토리 생성](#1-docker-compose-디렉토리-및-config-디렉토리-생성)
+      - [2. 설정 파일(yml)들을 config 디렉토리로 복사](#2-설정-파일yml들을-config-디렉토리로-복사)
+      - [3. blockchain.properties 파일 수정](#3-blockchainproperties-파일-수정)
+      - [4. application-database.yml 파일 수정](#4-application-databaseyml-파일-수정)
+    - [7.2.2. `docker-compose.yml` 파일 생성](#722-docker-composeyml-파일-생성)
+    - [7.2.3. 컨테이너 실행](#723-컨테이너-실행)
 - [8. Docker PostgreSQL 설치하기](#8-docker-postgresql-설치하기)
   - [8.1. Docker Compose를 이용한 PostgreSQL 설치](#81-docker-compose를-이용한-postgresql-설치)
   - [8.2. PostgreSQL 컨테이너 실행](#82-postgresql-컨테이너-실행)
@@ -103,12 +110,12 @@ Open DID Issuer Server Installation Guide
 
 ## 1.2. Issuer 서버 정의
 
-Issuer 서버는 Open DID 시스템 내에서 VC(Verifiable Credential) Schema 정의, VC 발급, 폐기, 상태 변경 등의 기능을 제공합니다.
+Issuer 서버는 Open DID 시스템 내에서 VC(Verifiable Credential) Schema 정의, VC 발급, 폐기, 상태 변경, ZKP Credential 정의 등의 기능을 제공합니다.
 
 <br/>
 
 ## 1.3. 시스템 요구 사항
-- **Java 17** 이상
+- **Java 21** 이상
 - **Gradle 7.0** 이상
 - **Docker** 및 **Docker Compose** (Docker 사용 시)
 - 최소 **2GB RAM** 및 **10GB 디스크 공간**
@@ -207,12 +214,13 @@ did-issuer-server
     └── did-issuer-server
         ├── gradle
         ├── libs
-            └── did-sdk-common-1.0.0.jar
-            └── did-blockchain-sdk-server-1.0.0.jar
-            └── did-core-sdk-server-1.0.0..jar
-            └── did-crypto-sdk-server-1.0.0.jar
-            └── did-datamodel-sdk-server-1.0.0.jar
-            └── did-wallet-sdk-server-1.0.0.jar
+            └── did-sdk-common-2.0.0.jar
+            └── did-blockchain-sdk-server-2.0.0.jar
+            └── did-core-sdk-server-2.0.0.jar
+            └── did-crypto-sdk-server-2.0.0.jar
+            └── did-datamodel-server-2.0.0.jar
+            └── did-wallet-sdk-server-2.0.0.jar
+            └── did-zkp-sdk-server-2.0.0.jar
         ├── sample
         └── src
         └── build.gradle
@@ -358,7 +366,7 @@ npm run dev
       cd build/libs
       ls
     ```
-- 이 명령어는 `did-issuer-server-1.0.0.jar` 파일을 생성합니다.
+- 이 명령어는 `did-issuer-server-2.0.0.jar` 파일을 생성합니다.
 
 <br/>
 
@@ -366,7 +374,7 @@ npm run dev
 빌드된 JAR 파일을 사용하여 서버를 구동합니다:
 
 ```bash
-java -jar did-issuer-server-1.0.0.jar
+java -jar did-issuer-server-2.0.0.jar
 ```
 
 > **주의**
@@ -524,31 +532,43 @@ logging:
     - 예시: `/path/to/your/blockchain.properties`
 
 ## 5.6. blockchain.properties
-- 역할: Issuer 서버에서 연동할 블록체인 서버 정보를 설정합니다. [Open DID Installation Guide]의 '5.1.1. Hyperledger Fabric 테스트 네트워크 설치'에 따라 Hyperledger Fabric 테스트 네트워크를 설치하면, 개인 키, 인증서, 서버 접속 정보 설정 파일이 자동으로 생성됩니다. blockchain.properties에서는 이들 파일이 위치한 경로와, Hyperledger Fabric 테스트 네트워크 설치 시 입력한 네트워크 이름을 설정합니다. 또한, '5.1.2. Open DID 체인코드 배포'에서 배포한 Open DID의 체인코드 이름도 설정합니다.
+- 역할: Issuer 서버에서 연동할 블록체인 서버 정보를 설정합니다. [Open DID Installation Guide]의 '5.3. Step 3: Blockchain 설치'에 따라 Hyperledger Besu 네트워크를 설치하면, 개인 키, 인증서, 서버 접속 정보 설정 파일이 자동으로 생성됩니다. blockchain.properties에서는 이들 파일이 위치한 경로와, Hyperledger Besu 설치 시 입력한 네트워크 이름을 설정합니다.
 
 - 위치: `src/main/resources/properties`
 
 ### 5.6.1. 블록체인 연동 설정 
+#### EVM Network Configuration
 
-* `fabric.configFilePath:`: 
-  - Hyperledger Fabric의 접속 정보 파일이 위치한 경로를 설정합니다. 해당 파일은 Hyperledger Fabric 테스트 네트워크 설치시 자동으로 생성되며, 기본 파일명은 'connection-org1.json' 입니다.
-  - 예시: {yourpath}/connection-org1.json
+- `evm.network.url:`:
+  - EVM Network 주소, 클라이언트와 동일한 로컬에 Besu를 구동하는 경우 해당 값은 고정 사용합니다. (Defalt Port : 8545)
+  - 예시: http://localhost:8545
 
-* `fabric.privateKeyFilePath:`: 
-  - Hyperledger Fabric의 클라이언트가 네트워크 상에서 트랜잭션 서명과 인증을 위해 사용하는 개인 키 파일 경로를 설정합니다. 해당 파일은 Hyperledger Fabric 테스트 네트워크 설치시 자동으로 생성됩니다.
-  - 예시: {yourpath}/{개인키 파일명}
+- `evm.chainId:`:
+  - Chain ID 식별자입니다. 현재는 1337의 고정값을 사용중입니다.(Defalt Value : 1337)
+  - 예시: 1337
 
-* `fabric.certificateFilePath:`: 
-  - Hyperledger Fabric의 클라이언트 인증서가 위치한 경로를 설정합니다. 해당 파일은 Hyperledger Fabric 테스트 네트워크 설치시 자동으로 생성되며, 기본 파일명은 'cert.pem' 입니다.
-  - 예시: /etc/hyperledger/fabric/certs/cert.pem
+- `evm.gas.limit:`:
+  - Hyperledger Besu EVM 트랜잭션에서 최대로 허용되는 가스 한도, 현재는 Free Gas로서 고정으로 사용합니다. (Defalt Value : 100000000)
+  - 예시: 100000000
 
-* `fabric.mychannel:`: 
-  - Hyperledger Fabric에서 사용하는 프파이빗 네트워크(채널) 이름입니다. Hyperledger Fabric 테스트 네트워크 설치시 입력한 채널명을 설정해야 합니다.
-  - 예시: mychannel
+- `evm.gas.price :`:
+  - 유닛 단위 가스 가격, 현재는 Free Gas로서 0으로  고정으로 사용합니다.(Defalt Value : 0)
+  - 예시: 0
 
-* `fabric.chaincodeName:`: 🔒
-  - Hyperledger Fabric에서 사용하는 Open DID의 체인코드 이름입니다. 해당 값은 'opendid'로 고정입니다.
-  - 예시: opendid
+- `evm.connection.timeout:`: 
+  - 네트워크 커넥션 타임아웃 값(milliseconds), 현재는 권장 값인 10000으로 고정 사용합니다. (Defalt Value : 10000)
+  - 예시: 10000
+
+
+#### EVM Contract Configuration
+
+- `evm.connection.address:`: 
+  - Hardhat으로 Smart Contract 배포 시 리턴되는 OpenDID Contract의 Address 값, 상세 가이드는 [DID Besu Contract] 참조 바랍니다.
+  - 예시: 0xa0E49611FB410c00f425E83A4240e1681c51DDf4
+
+- `evm.connection.privateKey:`: 
+  - API 접근 통제에 사용되는 k1 키, hardhat.config.js 내부 accounts에 정의된 키 문자열을 입력(앞에 0x 문자열은 제거)하면 Owner 권한으로 API 호출 가능(Default 설정), 상세 가이드는 [DID Besu Contract] 참조바랍니다.
+  - 예시: 0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63
 
 <br/>
 
@@ -605,25 +625,57 @@ Issuer 서버는 다양한 환경에서 실행될 수 있도록 `sample`와 `dev
 # 7. Docker로 빌드 후 구동하기
 
 ## 7.1. Docker 이미지 빌드 방법 (`Dockerfile` 기반)
+
+### 7.1.1. Docker 이미지 빌드
 다음 명령어로 Docker 이미지를 빌드합니다:
 
 ```bash
-docker build -t did-issuer-server .
+cd {source_directory}
+docker build -t did-issuer-server -f did-issuer-server/Dockerfile .
 ```
 
-## 7.2. Docker 이미지 실행
-빌드된 이미지를 실행합니다:
+<br/>
 
+## 7.2. Docker Compose를 이용한 구동
+
+### 7.2.1. 디렉토리 및 설정 파일 준비
+
+#### 1. docker-compose 디렉토리 및 config 디렉토리 생성
 ```bash
-docker run -d -p 8091:8091 did-issuer-server
+mkdir -p {docker_compose_directory}/config
 ```
 
-## 7.3. Docker Compose를 이용한 구동
+#### 2. 설정 파일(yml)들을 config 디렉토리로 복사
+```bash
+cp {application_yml_directory}/* {docker_compose_directory}/config/
+cp {blockchain_properties_path} {docker_compose_directory}/config/
+```
 
-### 7.3.1. `docker-compose.yml` 파일 설명
+#### 3. blockchain.properties 파일 수정
+```yml
+evm.network.url=http://host.docker.internal:8545
+... 생략
+```
+
+> **host.docker.internal**은 Docker 컨테이너에서 호스트 머신을 가리키는 특별한 주소입니다.  
+> 컨테이너 내부에서 localhost는 컨테이너 자신을 의미하므로, 호스트에서 실행 중인 서비스(PostgreSQL, 블록체인)에 접근하려면 host.docker.internal을 사용해야 합니다.
+
+#### 4. application-database.yml 파일 수정
+```yml
+spring:
+  ... 생략
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://host.docker.internal:5430/issuer
+    username: omn
+    password: omn
+  ... 생략
+```
+
+### 7.2.2. `docker-compose.yml` 파일 생성
 `docker-compose.yml` 파일을 사용하여 여러 컨테이너를 쉽게 관리할 수 있습니다.
 
-```yaml
+```yml
 version: '3'
 services:
   app:
@@ -631,24 +683,25 @@ services:
     ports:
       - "8091:8091"
     volumes:
-      - ${your-config-dir}:/app/config
+      - {config_directory}:/app/config
     environment:
-      - SPRING_PROFILES_ACTIVE=sample
+      - SPRING_PROFILES_ACTIVE=dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 ```
 
-### 7.3.2. 컨테이너 실행 및 관리
-다음 명령어로 Docker Compose를 사용해 컨테이너를 실행합니다:
+> - 위의 예시에서 `config_directory` 디렉토리를 컨테이너 내 `/app/config`로 마운트하여 설정 파일을 공유합니다.
+>   - `config_directory`에 위치한 설정 파일은 기본 설정 파일보다 우선적으로 적용됩니다.
+>   - 자세한 설정 방법은 [5. 설정 가이드](#5-설정-가이드) 를 참고해 주세요.
 
+
+### 7.2.3. 컨테이너 실행
 ```bash
+cd {docker_compose_directory}
 docker-compose up -d
 ```
 
-### 7.3.3. 서버 설정 방법
-위의 예시에서 `${your-config-dir}` 디렉토리를 컨테이너 내 `/app/config`로 마운트하여 설정 파일을 공유합니다.
-- 추가적인 설정이 필요한 경우, 마운트된 폴더에 별도의 property 파일을 추가하여 설정을 변경할 수 있습니다. 
-  - 예를 들어, `application.yml` 파일을 `${your-config-dir}`에 추가하고, 이 파일에 변경할 설정을 작성합니다. 
-  - `${your-config-dir}`에 위치한 `application.yml` 파일은 기본 설정 파일보다 우선적으로 적용됩니다.
-- 자세한 설정은 [5. 설정 가이드](#5-설정-가이드)를 참고합니다.
+<br/>
 
 # 8. Docker PostgreSQL 설치하기
 
@@ -695,5 +748,6 @@ docker-compose up -d
 이 명령어는 백그라운드에서 PostgreSQL 컨테이너를 실행합니다. 설정된 환경 변수에 따라 PostgreSQL 서버가 실행되며, 데이터베이스가 준비됩니다. 이 데이터베이스를 애플리케이션에서 사용할 수 있도록 연동 설정을 진행하면 됩니다.
 
 <!-- References -->
-[Open DID Installation Guide]: https://github.com/OmniOneID/did-release/blob/develop/unrelease-V1.0.1.0/OepnDID_Installation_Guide-V1.0.1.0_ko.md
+[Open DID Installation Guide]: https://github.com/OmniOneID/did-release/blob/develop/release-V2.0.0.0/OpenDID_Installation_Guide-V2.0.0.0_ko.md
+[DID Besu Contract]: https://github.com/OmniOneID/did-besu-contract
 [Open DID Admin Console Guide]: ../admin/OpenDID_IssuerAdmin_Operation_Guide_ko.md

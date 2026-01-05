@@ -111,7 +111,7 @@ const IssueProfileDetailPage = (props: Props) => {
         <StyledTitle>Issue Profile Detail Information</StyledTitle>
 
         <StyledInputArea>
-          <TextField label="VC Plan ID" value={issueProfileData?.vcSchemaId || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
+          <TextField label="VC Plan ID" value={issueProfileData?.vcPlanId || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
           <TextField label="Title" value={issueProfileData?.title || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
           <TextField label="Description" value={issueProfileData?.description || ''} fullWidth variant="standard" margin="normal" slotProps={{ input: { readOnly: true } }} />
           <Box onClick={handleOpenVcSchemaDetail}>

@@ -154,7 +154,7 @@ const ZkpNamespaceDetailPage = () => {
 
           <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 4 }}>
            <Button variant="contained" color="primary" onClick={() => navigate(-1)}>Back</Button>
-           <Button variant="outlined" color="primary" onClick={() => navigate('/zkp-management/zkp-namespace-management/zkp-namespace-edit/' + numericNamespaceId)}>Go to Edit</Button>
+           {/* <Button variant="outlined" color="primary" onClick={() => navigate('/zkp-management/zkp-namespace-management/zkp-namespace-edit/' + numericNamespaceId)}>Go to Edit</Button> */}
           </Box>
         </StyledInputArea>
       </StyledContainer>

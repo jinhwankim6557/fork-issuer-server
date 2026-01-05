@@ -38,6 +38,7 @@ public class NamespaceDto {
     private final SchemaClaims schemaClaims;
     private final String createdAt;
     private final String updatedAt;
+    private final int vcSchemaCount;
 
     public static NamespaceDto fromEntity(Namespace namespace) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -50,6 +51,22 @@ public class NamespaceDto {
                 .schemaClaims(namespace.getSchemaClaims())
                 .createdAt(formatInstant(namespace.getCreatedAt(), formatter))
                 .updatedAt(formatInstant(namespace.getUpdatedAt(), formatter))
+                .vcSchemaCount(0) // 기본값, 실제 값은 서비스에서 설정
+                .build();
+    }
+
+    public static NamespaceDto fromEntityWithCount(Namespace namespace, int vcSchemaCount) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        return NamespaceDto.builder()
+                .id(namespace.getId())
+                .namespaceId(namespace.getNamespaceId())
+                .name(namespace.getName())
+                .ref(namespace.getRef())
+                .schemaClaims(namespace.getSchemaClaims())
+                .createdAt(formatInstant(namespace.getCreatedAt(), formatter))
+                .updatedAt(formatInstant(namespace.getUpdatedAt(), formatter))
+                .vcSchemaCount(vcSchemaCount)
                 .build();
     }
 

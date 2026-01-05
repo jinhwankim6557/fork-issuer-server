@@ -69,16 +69,16 @@ const SortableRow = ({ attr, index, onRemove }: {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  
+
   return (
     <TableRow ref={setNodeRef} style={style}>
-      <TableCell>{attr.sortOrder + 1}</TableCell> 
+      <TableCell>{attr.sortOrder + 1}</TableCell>
       <TableCell {...attributes} {...listeners}>{attr.namespaceId}</TableCell>
       <TableCell {...attributes} {...listeners}>{attr.caption}</TableCell>
       <TableCell {...attributes} {...listeners}>{attr.label}</TableCell>
       <TableCell {...attributes} {...listeners}>{attr.type}</TableCell>
       <TableCell>
-        <IconButton 
+        <IconButton
           onClick={() => onRemove(index)}
         >
           <DeleteIcon sx={{ color: "#FF8400" }} />
@@ -116,7 +116,7 @@ const ZkpCredentialSchemaRegistrationPage = () => {
 
   const handleSubmit = async () => {
     if (!validate()) return;
-    
+
     const result = await dialogs.open(CustomConfirmDialog, {
       title: 'Confirmation',
       message: 'Register this Credential Schema?',
@@ -130,7 +130,7 @@ const ZkpCredentialSchemaRegistrationPage = () => {
       try {
         await postZkpSchema(formData);
         setIsLoading(false);
-        
+
         await dialogs.open(CustomDialog, {
           title: 'Notification',
           message: 'Completed register ZKP schema.',
@@ -141,32 +141,32 @@ const ZkpCredentialSchemaRegistrationPage = () => {
 
       } catch (error: any) {
         setIsLoading(false);
-    
+
         dialogs.open(CustomDialog, {
           title: 'Notification',
           message: formatErrorMessage(error, "Failed to register ZKP schema."),
           isModal: true,
         });
+      }
+    };
+  };
+
+  const handleOpenAttributeDialog = async () => {
+    const result = await dialogs.open(AttributeSelectDialog, []) as any as Attribute[];
+    if (result && Array.isArray(result)) {
+      const newList = [...formData.attributes];
+      result.forEach(attr => {
+        const exists = newList.some(a => a.namespaceId === attr.namespaceId && a.label === attr.label);
+        if (!exists) {
+          newList.push({
+            ...attr,
+            sortOrder: newList.length,
+          });
+        }
+      });
+      setFormData(prev => ({ ...prev, attributes: newList }));
     }
   };
-};
-
-const handleOpenAttributeDialog = async () => {
-  const result = await dialogs.open(AttributeSelectDialog, []) as any as Attribute[];
-  if (result && Array.isArray(result)) {
-    const newList = [...formData.attributes];
-    result.forEach(attr => {
-      const exists = newList.some(a => a.namespaceId === attr.namespaceId && a.label === attr.label);
-      if (!exists) {
-        newList.push({
-          ...attr,
-          sortOrder: newList.length,
-        });
-      }
-    });
-    setFormData(prev => ({ ...prev, attributes: newList }));
-  }
-};
 
   const handleRemoveAttribute = (index: number) => {
     console.log('Removing attribute at index:', index);
@@ -187,6 +187,12 @@ const handleOpenAttributeDialog = async () => {
     });
   };
 
+  const StyledTitle = useMemo(() => styled(Typography)({
+    textAlign: 'left',
+    fontSize: '24px',
+    fontWeight: 700,
+  }), []);
+
   const StyledContainer = useMemo(() => styled(Box)(({ theme }) => ({
     width: 900,
     margin: 'auto',
@@ -201,8 +207,9 @@ const handleOpenAttributeDialog = async () => {
   return (
     <>
       <FullscreenLoader open={isLoading} />
-      <Typography variant="h4">ZKP Credential Schema Registration</Typography>
+      <Typography variant="h4">Credential Schema Management</Typography>
       <StyledContainer>
+        <StyledTitle>Credential Schema Registration</StyledTitle>
         <TextField
           label="Name *"
           fullWidth
@@ -210,10 +217,16 @@ const handleOpenAttributeDialog = async () => {
           margin="normal"
           sx={{ width: '60%' }}
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const value = e.target.value;
+            if (!/\s/.test(value)) {
+              setFormData({ ...formData, name: value });
+            }
+          }}
           error={!!errors.name}
           helperText={errors.name}
         />
+
         <TextField
           label="Version *"
           fullWidth
@@ -221,10 +234,16 @@ const handleOpenAttributeDialog = async () => {
           margin="normal"
           sx={{ width: '60%' }}
           value={formData.version}
-          onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const value = e.target.value;
+            if (!/\s/.test(value)) {
+              setFormData({ ...formData, version: value });
+            }
+          }}
           error={!!errors.version}
           helperText={errors.version}
         />
+
         <TextField
           label="Tag *"
           fullWidth
@@ -232,7 +251,12 @@ const handleOpenAttributeDialog = async () => {
           margin="normal"
           sx={{ width: '60%' }}
           value={formData.tag}
-          onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const value = e.target.value;
+            if (!/\s/.test(value)) {
+              setFormData({ ...formData, tag: value });
+            }
+          }}
           error={!!errors.tag}
           helperText={errors.tag}
         />

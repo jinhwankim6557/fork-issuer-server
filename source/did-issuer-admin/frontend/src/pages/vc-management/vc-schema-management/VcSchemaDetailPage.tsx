@@ -196,9 +196,9 @@ const VcSchemaDetailPage = (props: Props) => {
                 <Button variant="outlined" color="primary" onClick={() => navigate('/vc-management/vc-schema-management')}>
                   Back
                 </Button>
-                <Button variant="outlined" color="primary" onClick={() => navigate('/vc-management/vc-schema-management/vc-schema-edit/' + numericVcSchemaId)}>
+                {/* <Button variant="outlined" color="primary" onClick={() => navigate('/vc-management/vc-schema-management/vc-schema-edit/' + numericVcSchemaId)}>
                   Go to Edit
-                </Button>
+                </Button> */}
               </>
             }
           </Box>

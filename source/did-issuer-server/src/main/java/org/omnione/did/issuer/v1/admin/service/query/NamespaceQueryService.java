@@ -17,6 +17,7 @@
 package org.omnione.did.issuer.v1.admin.service.query;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.omnione.did.base.db.domain.Namespace;
 import org.omnione.did.base.db.repository.NamespaceRepository;
 import org.omnione.did.base.db.repository.VcSchemaNamespaceRepository;
@@ -60,6 +61,7 @@ public class NamespaceQueryService {
      * @param pageable pagination information
      * @return a page of Namespace entities
      */
+    @Transactional(readOnly = true)
     public Page<Namespace> findAll(Pageable pageable) {
         return namespaceRepository.findAll(pageable);
     }
@@ -81,7 +83,7 @@ public class NamespaceQueryService {
      * @throws OpenDidException if the namespace is associated with a VC schema
      */
     public void deleteById(Long id) {
-        if (vcSchemaNamespaceRepository.existsByNamespaceId(id)) {
+        if (existsByNamespaceId(id)) {
             throw new OpenDidException(ErrorCode.NAMESPACE_DELETE_CONFLICT);
         }
         namespaceRepository.deleteById(id);
@@ -94,6 +96,7 @@ public class NamespaceQueryService {
      * @return the matching Namespace entity
      * @throws OpenDidException if not found
      */
+    @Transactional(readOnly = true)
     public Namespace findById(Long id) {
         return namespaceRepository.findById(id)
                 .orElseThrow(() -> new OpenDidException(ErrorCode.NAMESPACE_NOT_FOUND));
@@ -107,6 +110,7 @@ public class NamespaceQueryService {
      * @param pageable pagination information
      * @return page of NamespaceDto
      */
+    @Transactional(readOnly = true)
     public PageImpl<NamespaceDto> searchNamespaceList(String searchKey, String searchValue, Pageable pageable) {
         Page<Namespace> entityPage = namespaceRepository.searchNamespaces(searchKey, searchValue, pageable);
 
@@ -115,5 +119,20 @@ public class NamespaceQueryService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(namespaceDtos, pageable, entityPage.getTotalElements());
+    }
+
+    public boolean existsByNamespaceId(Long id) {
+        return vcSchemaNamespaceRepository.existsByNamespaceId(id);
+    }
+
+    /**
+     * Counts the number of VC schemas associated with a specific namespace.
+     *
+     * @param namespaceId the ID of the namespace
+     * @return the count of VC schemas using this namespace
+     */
+    @Transactional(readOnly = true)
+    public int countVcSchemasByNamespaceId(Long namespaceId) {
+        return (int) vcSchemaNamespaceRepository.countByNamespaceId(namespaceId);
     }
 }

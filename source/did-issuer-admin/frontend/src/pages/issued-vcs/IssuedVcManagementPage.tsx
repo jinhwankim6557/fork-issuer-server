@@ -51,7 +51,7 @@ const IssuedVcManagementPage = (props: Props) => {
 
   const handleStatusEdit = () => {
     if (!selectedRowData || selectedRowData.status === 'REVOKED') {
-      alert('REVOKED 상태는 변경할 수 없습니다.');
+      alert('The REVOKED state cannot be changed to any other state.');
       return;
     }
 
@@ -71,7 +71,7 @@ const IssuedVcManagementPage = (props: Props) => {
       fetchIssuedVc(paginationModel.page, paginationModel.pageSize, null, null)
         .then((response) => {
           setRows(response.data.content);
-          setTotalRows(response.data.totalElements);
+          setTotalRows(response.data.total);
         });
   
     } catch (error) {
@@ -93,7 +93,7 @@ const IssuedVcManagementPage = (props: Props) => {
     fetchIssuedVc(paginationModel.page, paginationModel.pageSize, null, null)
       .then((response) => {
         setRows(response.data.content);
-        setTotalRows(response.data.totalElements);
+        setTotalRows(response.data.total);
       })
       .catch((error) => {
         console.error("Failed to retrieve User Infos. ", error);

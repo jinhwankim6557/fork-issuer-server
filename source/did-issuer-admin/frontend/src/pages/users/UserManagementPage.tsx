@@ -42,7 +42,7 @@ const UserManagementPage = (props: Props) => {
     fetchUserInfos(paginationModel.page, paginationModel.pageSize, null, null)
       .then((response) => {
         setRows(response.data.content);
-        setTotalRows(response.data.totalElements);
+        setTotalRows(response.data.total);
       })
       .catch((error) => {
         console.error("Failed to retrieve User Infos. ", error);
@@ -86,7 +86,7 @@ const UserManagementPage = (props: Props) => {
             { field: 'updatedAt', headerName: "Updated At", width: 200 },
             {
               field: "",
-              headerName: "확인",
+              headerName: "View",
               width: 150,
               renderCell: (params) => (
                 <Box sx={{
@@ -99,7 +99,7 @@ const UserManagementPage = (props: Props) => {
                     size="small"
                     onClick={() => navigate(`/users/user-management/${params.row.id}`)}
                   >
-                    상세보기
+                    View
                   </Button>
                 </Box>
               )
@@ -107,12 +107,12 @@ const UserManagementPage = (props: Props) => {
           ]}
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
-          onEdit={() => {
-            if (selectedRowData) {
-              navigate(`/users/user-management/user-edit/${selectedRowData.id}`);
-            }
-          }}
-          onRegister={() => navigate('/users/user-management/user-registration')}
+          // onEdit={() => {
+          //   if (selectedRowData) {
+          //     navigate(`/users/user-management/user-edit/${selectedRowData.id}`);
+          //   }
+          // }}
+          // onRegister={() => navigate('/users/user-management/user-registration')}
           additionalButtons={[
 
           ]}

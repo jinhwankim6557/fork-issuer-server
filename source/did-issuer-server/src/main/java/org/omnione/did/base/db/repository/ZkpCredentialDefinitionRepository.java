@@ -48,4 +48,6 @@ public interface ZkpCredentialDefinitionRepository extends JpaRepository<ZkpCred
     Optional<ZkpCredentialDefinition> findByDefinitionId(String definitionId);
 
     List<ZkpCredentialDefinition> findAllByStatusNot(ZkpCredentialDefinitionStatus status);
+
+    Boolean existsBySchemaId(String schemaId);
 }

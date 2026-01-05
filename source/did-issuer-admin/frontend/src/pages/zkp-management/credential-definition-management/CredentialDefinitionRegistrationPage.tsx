@@ -65,6 +65,8 @@ const CredentialDefinitionRegistrationPage = () => {
   const [errors, setErrors] = useState<ErrorState>({});
   const [schemaList, setSchemaList] = useState<ZkpSchemaData[]>([]);
   const [isAliasIsValid, setIsAliasValid] = useState(false);
+  const [aliasCheckMessage, setAliasCheckMessage] = useState<string>('');
+  const [aliasCheckStatus, setAliasCheckStatus] = useState<'success' | 'error' | ''>('');
 
   const [formData, setFormData] = useState<FormData>({
     schemaId: '',
@@ -86,6 +88,8 @@ const CredentialDefinitionRegistrationPage = () => {
       tag: "",
     });
     setIsAliasValid(false);
+    setAliasCheckMessage('');
+    setAliasCheckStatus('');
   };
 
   const handleSchemaChange = (event: any) => {
@@ -104,6 +108,8 @@ const CredentialDefinitionRegistrationPage = () => {
     if (field === "alias") {
       setIsAliasValid(false);
       setErrors((prev) => ({ ...prev, alias: undefined }));
+      setAliasCheckMessage('');
+      setAliasCheckStatus('');
     }
   };
 
@@ -146,7 +152,7 @@ const CredentialDefinitionRegistrationPage = () => {
     return isValid;
   };
 
-  
+
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -180,16 +186,31 @@ const CredentialDefinitionRegistrationPage = () => {
   };
 
   const handleCheckDuplicateDefinitionAlias = () => {
+    if (!formData.alias.trim()) {
+      setAliasCheckMessage('Please enter an alias first.');
+      setAliasCheckStatus('error');
+      return;
+    }
+
     verifyCredentialDefinitionAliasUnique(formData.alias)
-    .then((response) => {
-        if (response.data.unique === false) {
-            setErrors((prev) => ({ ...prev, alias: 'Alias already exists.' }));
-            setIsAliasValid(false);
-        } else {        
-            setIsAliasValid(true);
-            setErrors((prev) => ({ ...prev, alias: undefined }));
+      .then((response) => {
+        if (response.data.isUnique === false) {
+          setErrors((prev) => ({ ...prev, alias: 'Alias already exists.' }));
+          setIsAliasValid(false);
+          setAliasCheckMessage('This alias is already in use. Please choose a different one.');
+          setAliasCheckStatus('error');
+        } else {
+          setIsAliasValid(true);
+          setErrors((prev) => ({ ...prev, alias: undefined }));
+          setAliasCheckMessage('This alias is available for use.');
+          setAliasCheckStatus('success');
         }
-    });
+      })
+      .catch((error) => {
+        setIsAliasValid(false);
+        setAliasCheckMessage('Failed to check alias availability. Please try again.');
+        setAliasCheckStatus('error');
+      });
   };
 
   useEffect(() => {
@@ -257,7 +278,7 @@ const CredentialDefinitionRegistrationPage = () => {
             </Select>
             {errors.schemaName && <FormHelperText>{errors.schemaName}</FormHelperText>}
           </FormControl>
-        
+
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <TextField
@@ -266,31 +287,49 @@ const CredentialDefinitionRegistrationPage = () => {
               size="small"
               margin="normal"
               value={formData.alias}
-              onChange={handleChange("alias")}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value;
+                if (!/\s/.test(value)) {
+                  handleChange("alias")(e);
+                }
+              }}
               error={!!errors.alias}
-              helperText={errors.alias}
+              helperText={errors.alias || aliasCheckMessage}
+              sx={{
+                '& .MuiFormHelperText-root': {
+                  color: aliasCheckStatus === 'success' ? 'green' :
+                    aliasCheckStatus === 'error' ? 'red' : 'inherit',
+                  fontWeight: aliasCheckStatus ? 500 : 'inherit'
+                }
+              }}
             />
-            <Button 
-                variant="contained" 
-                onClick={handleCheckDuplicateDefinitionAlias}
-                disabled={!formData.alias}
-                sx={{ 
-                    minWidth: 150,  
-                    whiteSpace: 'nowrap', 
-                    textTransform: 'none' 
-                }}
+
+            <Button
+              variant="contained"
+              onClick={handleCheckDuplicateDefinitionAlias}
+              disabled={!formData.alias}
+              sx={{
+                minWidth: 150,
+                whiteSpace: 'nowrap',
+                textTransform: 'none'
+              }}
             >
-                Check Availability
+              Check Availability
             </Button>
           </Box>
-        
+
           <TextField
             label="Definition Version *"
             fullWidth
             size="small"
             margin="normal"
             value={formData.version}
-            onChange={handleChange("version")}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              if (!/\s/.test(value)) {
+                handleChange("version")(e);
+              }
+            }}
             error={!!errors.version}
             helperText={errors.version}
           />
@@ -315,7 +354,12 @@ const CredentialDefinitionRegistrationPage = () => {
             size="small"
             margin="normal"
             value={formData.tag}
-            onChange={handleChange("tag")}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              if (!/\s/.test(value)) {
+                handleChange("tag")(e);
+              }
+            }}
             error={!!errors.tag}
             helperText={errors.tag}
           />
