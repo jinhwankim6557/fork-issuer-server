@@ -1,18 +1,14 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
 version: 2
 updates:
-
+  # 1. Gradle 설정
   - package-ecosystem: "gradle"
     directory: "/source/did-issuer-server"
     schedule:
       interval: "daily"
-      time: "15:10"
+      time: "16:00"
       timezone: "Asia/Seoul"
-
+    
+    # 보안 업데이트만 받기 (일반 업데이트 차단)
     open-pull-requests-limit: 0
     
     reviewers:
@@ -20,14 +16,15 @@ updates:
     assignees:
       - "jhkim6557"
 
-
+  # 2. npm 설정
   - package-ecosystem: "npm"
     directory: "/source/did-issuer-admin/frontend"
     schedule:
       interval: "daily"
-      time: "15:10"
+      time: "16:00"
       timezone: "Asia/Seoul"
       
+    # 보안 업데이트만 받기 (일반 업데이트 차단)
     open-pull-requests-limit: 0
 
     reviewers:
