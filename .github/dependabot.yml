@@ -13,10 +13,7 @@ updates:
       time: "15:10"
       timezone: "Asia/Seoul"
 
-    groups:
-      dependencies:
-        patterns:
-          - "*"
+    open-pull-requests-limit: 0
     
     reviewers:
       - "jhkim6557"
@@ -31,10 +28,7 @@ updates:
       time: "15:10"
       timezone: "Asia/Seoul"
       
-    groups:
-      dependencies:
-        patterns:
-          - "*"
+    open-pull-requests-limit: 0
 
     reviewers:
       - "jhkim6557"
