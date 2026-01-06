@@ -7,10 +7,10 @@ version: 2
 updates:
 
   - package-ecosystem: "gradle"
-    directory: "/fork-issuer-server/source/did-issuer-server"
+    directory: "/source/did-issuer-server"
     schedule:
       interval: "daily"
-      time: "15:00"
+      time: "15:10"
       timezone: "Asia/Seoul"
 
     groups:
@@ -25,10 +25,10 @@ updates:
 
 
   - package-ecosystem: "npm"
-    directory: "/fork-issuer-server/source/did-issuer-admin/frontend"
+    directory: "/source/did-issuer-admin/frontend"
     schedule:
       interval: "daily"
-      time: "15:00"
+      time: "15:10"
       timezone: "Asia/Seoul"
       
     groups:
