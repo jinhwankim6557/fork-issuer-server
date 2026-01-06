@@ -6,8 +6,8 @@
 version: 2
 updates:
 
-  - package-ecosystem: "maven"
-    directory: "/"
+  - package-ecosystem: "gradle"
+    directory: "/fork-issuer-server/source/did-issuer-server"
     schedule:
       interval: "daily"
       time: "15:00"
@@ -25,7 +25,7 @@ updates:
 
 
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/fork-issuer-server/source/did-issuer-admin/frontend"
     schedule:
       interval: "daily"
       time: "15:00"
